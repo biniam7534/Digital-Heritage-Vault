@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Vault, Search, Library, Info, PlusCircle, Menu, X } from 'lucide-react';
+import { Vault, ChevronDown, Menu, X } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 const Navbar = () => {
@@ -8,52 +8,67 @@ const Navbar = () => {
     const location = useLocation();
 
     const navLinks = [
-        { name: 'Explorer', path: '/explorer', icon: Search },
-        { name: 'Collections', path: '/collections', icon: Library },
-        { name: 'About', path: '/about', icon: Info },
+        { name: 'Home', path: '#home' },
+        { name: 'Explore', path: '#explore' },
+        { name: 'Workshop', path: '#workshop' },
+        { name: 'Stats', path: '#metrics' },
     ];
 
+    const isHomePage = location.pathname === '/';
+
     return (
-        <nav className="fixed top-0 w-full z-50 glass border-b border-primary-100">
+        <nav className="fixed top-0 w-full z-50 glass-dark border-b border-heritage-gold/20">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div className="flex justify-between h-20 items-center">
-                    {/* Logo */}
-                    <Link to="/" className="flex items-center gap-3 group">
-                        <div className="w-12 h-12 bg-gradient-to-br from-primary-500 to-primary-600 rounded-2xl flex items-center justify-center shadow-lg shadow-primary-200 group-hover:scale-105 transition-transform">
-                            <Vault className="text-white w-7 h-7" />
+                    {/* Logo Section */}
+                    <Link to="/" onClick={() => window.scrollTo(0, 0)} className="flex items-center gap-3 group">
+                        <div className="w-10 h-10 border border-heritage-gold/50 flex items-center justify-center rotate-45 group-hover:rotate-0 transition-transform duration-500">
+                            <Vault className="text-heritage-gold w-5 h-5 -rotate-45 group-hover:rotate-0 transition-transform duration-500" />
                         </div>
-                        <div className="flex flex-col">
-                            <span className="font-display font-bold text-xl tracking-tight leading-none">
-                                Digital Heritage <span className="text-primary-600">Vault</span>
-                            </span>
-                            <span className="text-[10px] uppercase tracking-[0.2em] font-bold text-slate-400">Preserving History</span>
-                        </div>
+                        <span className="font-display font-bold text-xl tracking-wider text-heritage-paper">
+                            DIGITAL HERITAGE <span className="text-heritage-gold">VAULT</span>
+                        </span>
                     </Link>
 
-                    {/* Desktop Nav */}
-                    <div className="hidden md:flex items-center space-x-10">
+                    {/* Desktop Navigation */}
+                    <div className="hidden md:flex items-center space-x-8">
                         {navLinks.map((link) => (
-                            <Link
-                                key={link.name}
-                                to={link.path}
-                                className={`flex items-center gap-2 font-medium transition-colors hover:text-primary-600 ${location.pathname === link.path ? 'text-primary-600' : 'text-slate-600'
-                                    }`}
-                            >
-                                <link.icon className="w-4 h-4" />
-                                {link.name}
-                            </Link>
+                            <div key={link.name} className="relative group/link">
+                                {isHomePage ? (
+                                    <a
+                                        href={link.path}
+                                        className="flex items-center gap-1 font-display text-sm uppercase tracking-widest transition-colors hover:text-heritage-gold text-heritage-paper/80"
+                                    >
+                                        {link.name}
+                                    </a>
+                                ) : (
+                                    <Link
+                                        to={`/${link.path}`}
+                                        className="flex items-center gap-1 font-display text-sm uppercase tracking-widest transition-colors hover:text-heritage-gold text-heritage-paper/80"
+                                    >
+                                        {link.name}
+                                    </Link>
+                                )}
+                                <div className="absolute -bottom-1 left-0 w-0 h-0.5 bg-heritage-gold transition-all duration-300 group-hover/link:w-full" />
+                            </div>
                         ))}
-                        <Link to="/submit">
-                            <button className="flex items-center gap-2 bg-primary-600 text-white px-6 py-3 rounded-2xl font-bold hover:bg-primary-700 transition-all shadow-md hover:shadow-lg active:scale-95">
-                                <PlusCircle className="w-5 h-5" />
-                                Submit Artifact
+                    </div>
+
+                    {/* Action Buttons */}
+                    <div className="hidden md:flex items-center gap-4">
+                        <Link to="/login" className="text-sm font-display uppercase tracking-widest text-heritage-paper hover:text-heritage-gold transition-colors">
+                            Login
+                        </Link>
+                        <Link to="/register">
+                            <button className="bg-heritage-gold text-heritage-dark px-6 py-2 font-display text-sm uppercase tracking-widest font-bold hover:bg-white hover:text-heritage-dark transition-all gold-border">
+                                Register
                             </button>
                         </Link>
                     </div>
 
                     {/* Mobile Toggle */}
-                    <button className="md:hidden p-2 text-slate-600" onClick={() => setIsOpen(!isOpen)}>
-                        {isOpen ? <X /> : <Menu />}
+                    <button className="md:hidden p-2 text-heritage-paper focus:outline-none" onClick={() => setIsOpen(!isOpen)}>
+                        {isOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
                     </button>
                 </div>
             </div>
@@ -62,28 +77,33 @@ const Navbar = () => {
             <AnimatePresence>
                 {isOpen && (
                     <motion.div
-                        initial={{ opacity: 0, y: -20 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        exit={{ opacity: 0, y: -20 }}
-                        className="md:hidden bg-white border-b border-primary-100 p-4 space-y-4 shadow-xl"
+                        initial={{ opacity: 0, height: 0 }}
+                        animate={{ opacity: 1, height: 'auto' }}
+                        exit={{ opacity: 0, height: 0 }}
+                        className="md:hidden bg-heritage-wood border-b border-heritage-gold/20 overflow-hidden"
                     >
-                        {navLinks.map((link) => (
-                            <Link
-                                key={link.name}
-                                to={link.path}
-                                onClick={() => setIsOpen(false)}
-                                className="flex items-center gap-3 p-3 rounded-xl hover:bg-primary-50 text-slate-700 font-semibold"
-                            >
-                                <link.icon className="w-5 h-5 text-primary-600" />
-                                {link.name}
-                            </Link>
-                        ))}
-                        <Link to="/submit" onClick={() => setIsOpen(false)} className="block">
-                            <button className="w-full flex items-center justify-center gap-2 bg-primary-600 text-white px-6 py-4 rounded-xl font-bold">
-                                <PlusCircle className="w-5 h-5" />
-                                Submit Artifact
-                            </button>
-                        </Link>
+                        <div className="px-4 py-8 space-y-6">
+                            {navLinks.map((link) => (
+                                <a
+                                    key={link.name}
+                                    href={link.path}
+                                    onClick={() => setIsOpen(false)}
+                                    className="block font-display text-lg uppercase tracking-widest text-heritage-paper hover:text-heritage-gold transition-colors"
+                                >
+                                    {link.name}
+                                </a>
+                            ))}
+                            <div className="pt-4 flex flex-col gap-4">
+                                <Link to="/login" onClick={() => setIsOpen(false)} className="text-center font-display uppercase tracking-widest text-heritage-paper">
+                                    Login
+                                </Link>
+                                <Link to="/register" onClick={() => setIsOpen(false)}>
+                                    <button className="w-full bg-heritage-gold text-heritage-dark px-6 py-3 font-display uppercase tracking-widest font-bold">
+                                        Register
+                                    </button>
+                                </Link>
+                            </div>
+                        </div>
                     </motion.div>
                 )}
             </AnimatePresence>
@@ -92,3 +112,5 @@ const Navbar = () => {
 };
 
 export default Navbar;
+
+

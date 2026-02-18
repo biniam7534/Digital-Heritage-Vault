@@ -2,6 +2,9 @@ import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import MainLayout from './layouts/MainLayout';
 import Home from './pages/Home';
+import Explore from './pages/Explore';
+import ArtifactDetail from './pages/ArtifactDetail';
+import AdminDashboard from './pages/AdminDashboard';
 
 function App() {
   return (
@@ -9,11 +12,13 @@ function App() {
       <MainLayout>
         <Routes>
           <Route path="/" element={<Home />} />
-          {/* Placeholder routes for future expansion */}
-          <Route path="/explorer" element={<div className="pt-32 pb-20 text-center font-display text-4xl font-bold">Explorer Coming Soon</div>} />
-          <Route path="/collections" element={<div className="pt-32 pb-20 text-center font-display text-4xl font-bold">Collections Coming Soon</div>} />
+          <Route path="/explore" element={<Explore />} />
+          <Route path="/categories" element={<Explore />} />
+          <Route path="/artifact/:id" element={<ArtifactDetail />} />
+          <Route path="/admin" element={<AdminDashboard />} />
           <Route path="/about" element={<div className="pt-32 pb-20 text-center font-display text-4xl font-bold">About Coming Soon</div>} />
-          <Route path="/submit" element={<div className="pt-32 pb-20 text-center font-display text-4xl font-bold">Submission Vault Coming Soon</div>} />
+          <Route path="/login" element={<div className="pt-32 pb-20 text-center font-display text-4xl font-bold">Login Coming Soon</div>} />
+          <Route path="/register" element={<div className="pt-32 pb-20 text-center font-display text-4xl font-bold">Register Coming Soon</div>} />
         </Routes>
       </MainLayout>
     </Router>
@@ -21,3 +26,6 @@ function App() {
 }
 
 export default App;
+
+
+
