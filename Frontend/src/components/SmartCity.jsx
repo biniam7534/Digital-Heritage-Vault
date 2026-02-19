@@ -38,7 +38,7 @@ const SmartCity = () => {
     const data = cityData.find(d => d.year === currentYear) || cityData[0];
 
     return (
-        <section className="py-24 px-4 bg-futuristic-bg relative overflow-hidden">
+        <section id="simulation" className="py-24 px-4 bg-futuristic-bg relative overflow-hidden">
             <div className="max-w-7xl mx-auto">
                 <div className="text-center mb-16">
                     <motion.h2

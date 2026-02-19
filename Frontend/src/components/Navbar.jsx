@@ -1,108 +1,99 @@
-import React from 'react';
-import { Link, useLocation } from 'react-router-dom';
-import { Vault, ChevronDown, Menu, X } from 'lucide-react';
+import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { Menu, X, Rocket } from 'lucide-react';
 
 const Navbar = () => {
-    const [isOpen, setIsOpen] = React.useState(false);
-    const location = useLocation();
+    const [isScrolled, setIsScrolled] = useState(false);
+    const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+
+    useEffect(() => {
+        const handleScroll = () => {
+            setIsScrolled(window.scrollY > 50);
+        };
+        window.addEventListener('scroll', handleScroll);
+        return () => window.removeEventListener('scroll', handleScroll);
+    }, []);
 
     const navLinks = [
-        { name: 'Home', path: '#home' },
-        { name: 'Explore', path: '#explore' },
-        { name: 'Workshop', path: '#workshop' },
-        { name: 'Stats', path: '#metrics' },
+        { name: 'Home', href: '#home' },
+        { name: 'Simulation', href: '#simulation' },
+        { name: 'Predictor', href: '#predictor' },
+        { name: 'Trends', href: '#trends' },
+        { name: 'Vision', href: '#vision' },
     ];
 
-    const isHomePage = location.pathname === '/';
-
     return (
-        <nav className="fixed top-0 w-full z-50 glass-dark border-b border-heritage-gold/20">
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                <div className="flex justify-between h-20 items-center">
-                    {/* Logo Section */}
-                    <Link to="/" onClick={() => window.scrollTo(0, 0)} className="flex items-center gap-3 group">
-                        <div className="w-10 h-10 border border-heritage-gold/50 flex items-center justify-center rotate-45 group-hover:rotate-0 transition-transform duration-500">
-                            <Vault className="text-heritage-gold w-5 h-5 -rotate-45 group-hover:rotate-0 transition-transform duration-500" />
-                        </div>
-                        <span className="font-display font-bold text-xl tracking-wider text-heritage-paper">
-                            DIGITAL HERITAGE <span className="text-heritage-gold">VAULT</span>
-                        </span>
-                    </Link>
-
-                    {/* Desktop Navigation */}
-                    <div className="hidden md:flex items-center space-x-8">
-                        {navLinks.map((link) => (
-                            <div key={link.name} className="relative group/link">
-                                {isHomePage ? (
-                                    <a
-                                        href={link.path}
-                                        className="flex items-center gap-1 font-display text-sm uppercase tracking-widest transition-colors hover:text-heritage-gold text-heritage-paper/80"
-                                    >
-                                        {link.name}
-                                    </a>
-                                ) : (
-                                    <Link
-                                        to={`/${link.path}`}
-                                        className="flex items-center gap-1 font-display text-sm uppercase tracking-widest transition-colors hover:text-heritage-gold text-heritage-paper/80"
-                                    >
-                                        {link.name}
-                                    </Link>
-                                )}
-                                <div className="absolute -bottom-1 left-0 w-0 h-0.5 bg-heritage-gold transition-all duration-300 group-hover/link:w-full" />
-                            </div>
-                        ))}
+        <nav
+            className={`fixed top-0 left-0 w-full z-50 transition-all duration-500 ${isScrolled ? 'py-4 glass-card rounded-none border-t-0 border-x-0 bg-black/50' : 'py-8 bg-transparent'
+                }`}
+        >
+            <div className="max-w-7xl mx-auto px-6 flex justify-between items-center">
+                {/* Logo */}
+                <motion.div
+                    initial={{ opacity: 0, x: -20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    className="flex items-center gap-2 group cursor-pointer"
+                >
+                    <div className="p-2 rounded-lg futuristic-gradient group-hover:rotate-12 transition-transform">
+                        <Rocket className="text-black w-6 h-6" />
                     </div>
+                    <span className="text-xl font-black tracking-tighter text-white uppercase font-future">
+                        Future<span className="text-futuristic-accent">Scope</span>
+                    </span>
+                </motion.div>
 
-                    {/* Action Buttons */}
-                    <div className="hidden md:flex items-center gap-4">
-                        <Link to="/login" className="text-sm font-display uppercase tracking-widest text-heritage-paper hover:text-heritage-gold transition-colors">
-                            Login
-                        </Link>
-                        <Link to="/register">
-                            <button className="bg-heritage-gold text-heritage-dark px-6 py-2 font-display text-sm uppercase tracking-widest font-bold hover:bg-white hover:text-heritage-dark transition-all gold-border">
-                                Register
-                            </button>
-                        </Link>
-                    </div>
+                {/* Desktop Nav */}
+                <div className="hidden md:flex items-center gap-8">
+                    {navLinks.map((link) => (
+                        <a
+                            key={link.name}
+                            href={link.href}
+                            className="text-sm font-bold uppercase tracking-widest text-gray-400 hover:text-futuristic-accent transition-colors relative group"
+                        >
+                            {link.name}
+                            <span className="absolute -bottom-2 left-0 w-0 h-0.5 bg-futuristic-accent transition-all group-hover:w-full" />
+                        </a>
+                    ))}
+                    <motion.button
+                        whileHover={{ scale: 1.05 }}
+                        whileTap={{ scale: 0.95 }}
+                        className="px-6 py-2 rounded-full border border-futuristic-accent text-futuristic-accent text-xs font-black uppercase tracking-widest hover:bg-futuristic-accent hover:text-black transition-all"
+                    >
+                        Launch System
+                    </motion.button>
+                </div>
 
-                    {/* Mobile Toggle */}
-                    <button className="md:hidden p-2 text-heritage-paper focus:outline-none" onClick={() => setIsOpen(!isOpen)}>
-                        {isOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+                {/* Mobile Toggle */}
+                <div className="md:hidden">
+                    <button onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)} className="text-white">
+                        {isMobileMenuOpen ? <X /> : <Menu />}
                     </button>
                 </div>
             </div>
 
             {/* Mobile Menu */}
             <AnimatePresence>
-                {isOpen && (
+                {isMobileMenuOpen && (
                     <motion.div
                         initial={{ opacity: 0, height: 0 }}
                         animate={{ opacity: 1, height: 'auto' }}
                         exit={{ opacity: 0, height: 0 }}
-                        className="md:hidden bg-heritage-wood border-b border-heritage-gold/20 overflow-hidden"
+                        className="md:hidden glass-card mx-4 mt-4 overflow-hidden border-t-0"
                     >
-                        <div className="px-4 py-8 space-y-6">
+                        <div className="flex flex-col p-6 gap-6">
                             {navLinks.map((link) => (
                                 <a
                                     key={link.name}
-                                    href={link.path}
-                                    onClick={() => setIsOpen(false)}
-                                    className="block font-display text-lg uppercase tracking-widest text-heritage-paper hover:text-heritage-gold transition-colors"
+                                    href={link.href}
+                                    onClick={() => setIsMobileMenuOpen(false)}
+                                    className="text-lg font-bold uppercase tracking-widest text-gray-400 hover:text-futuristic-accent"
                                 >
                                     {link.name}
                                 </a>
                             ))}
-                            <div className="pt-4 flex flex-col gap-4">
-                                <Link to="/login" onClick={() => setIsOpen(false)} className="text-center font-display uppercase tracking-widest text-heritage-paper">
-                                    Login
-                                </Link>
-                                <Link to="/register" onClick={() => setIsOpen(false)}>
-                                    <button className="w-full bg-heritage-gold text-heritage-dark px-6 py-3 font-display uppercase tracking-widest font-bold">
-                                        Register
-                                    </button>
-                                </Link>
-                            </div>
+                            <button className="w-full py-4 rounded-lg futuristic-gradient text-black font-black uppercase">
+                                Launch System
+                            </button>
                         </div>
                     </motion.div>
                 )}
@@ -112,5 +103,3 @@ const Navbar = () => {
 };
 
 export default Navbar;
-
-

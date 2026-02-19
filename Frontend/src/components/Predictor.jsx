@@ -24,7 +24,7 @@ const Predictor = () => {
     };
 
     return (
-        <section className="py-24 px-4 bg-futuristic-bg relative border-t border-gray-900">
+        <section id="predictor" className="py-24 px-4 bg-futuristic-bg relative border-t border-gray-900">
             <div className="max-w-7xl mx-auto">
                 <div className="text-center mb-16">
                     <h2 className="text-4xl font-bold mb-4">Personal Future Predictor</h2>

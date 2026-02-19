@@ -2,7 +2,7 @@ import { motion } from 'framer-motion';
 
 const Footer = () => {
     return (
-        <footer className="py-24 px-4 bg-futuristic-bg relative overflow-hidden text-center">
+        <footer id="vision" className="py-24 px-4 bg-futuristic-bg relative overflow-hidden text-center">
             {/* Background Glow */}
             <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-futuristic-purple opacity-10 blur-[150px] pointer-events-none" />
 

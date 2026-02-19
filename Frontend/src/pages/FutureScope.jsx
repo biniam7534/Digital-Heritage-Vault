@@ -1,3 +1,4 @@
+import Navbar from '../components/Navbar';
 import Hero from '../components/Hero';
 import SmartCity from '../components/SmartCity';
 import Predictor from '../components/Predictor';
@@ -7,6 +8,7 @@ import Footer from '../components/Footer';
 const FutureScope = () => {
     return (
         <div className="bg-futuristic-bg text-white selection:bg-futuristic-accent selection:text-black">
+            <Navbar />
             <Hero />
             <SmartCity />
             <Predictor />
@@ -15,5 +17,6 @@ const FutureScope = () => {
         </div>
     );
 };
+
 
 export default FutureScope;

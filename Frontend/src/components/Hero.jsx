@@ -2,7 +2,7 @@ import { motion } from 'framer-motion';
 
 const Hero = () => {
     return (
-        <section className="relative h-screen w-full flex items-center justify-center overflow-hidden bg-futuristic-bg">
+        <section id="home" className="relative h-screen w-full flex items-center justify-center overflow-hidden bg-futuristic-bg">
             {/* Background Gradient Animation */}
             <div className="absolute inset-0 opacity-20">
                 <motion.div
