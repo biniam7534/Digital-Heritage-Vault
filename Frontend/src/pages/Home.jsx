@@ -1,254 +1,320 @@
 import React, { useState } from 'react';
 import Hero from '../components/Hero';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import {
-    ArrowRight, Search, Shield, FileText, Music,
-    Play, Star, Database, Users, TrendingUp, Plus, Edit3, Trash2, Clock, Globe
+    Shield, Globe, Clock, Zap, AlertTriangle, TrendingDown,
+    MapPin, Info, ChevronRight, Activity, Wind, CloudRain
 } from 'lucide-react';
+import { ethiopianSites } from '../data/ethiopianSites';
 
 const Home = () => {
-    const [activeFilter, setActiveFilter] = useState('All');
-
-    const filters = [
-        { name: 'All', icon: null },
-        { name: 'Artifacts', icon: <Shield className="w-4 h-4" /> },
-        { name: 'Documents', icon: <FileText className="w-4 h-4" /> },
-        { name: 'Audio', icon: <Music className="w-4 h-4" /> },
-    ];
-
-    const artifacts = [
-        { id: 1, title: 'Egyptian Sarcophagus', type: 'Artifact', image: 'https://images.unsplash.com/photo-1594787318286-3d835c1d207f?auto=format&fit=crop&q=80&w=600' },
-        { id: 2, title: 'Medieval Sword', type: 'Artifact', image: 'https://images.unsplash.com/photo-1518709268805-4e9042af9f23?auto=format&fit=crop&q=80&w=600' },
-        { id: 3, title: 'Historical Document', type: 'Document', image: 'https://images.unsplash.com/photo-1627916640411-96530664e1f7?auto=format&fit=crop&q=80&w=600' },
-        { id: 4, title: 'Native Pottery', type: 'Artifact', image: 'https://images.unsplash.com/photo-1605721911519-3dfeb3be25e7?auto=format&fit=crop&q=80&w=600' },
-    ];
+    const [selectedSite, setSelectedSite] = useState(null);
+    const [viewMode, setViewMode] = useState('present'); // 'present' or 'future'
 
     return (
-        <div className="bg-heritage-dark min-h-screen">
-            {/* 1. Hero Hub */}
-            <div id="home">
-                <Hero />
-            </div>
+        <div className="bg-heritage-navy min-h-screen text-gray-200 font-sans overflow-x-hidden">
+            <Hero />
 
-            {/* 2. Featured Fragments Section */}
-            <section id="featured" className="py-32 border-b border-heritage-gold/5">
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                    <div className="flex flex-col md:flex-row justify-between items-end mb-20 gap-8">
+            {/* 2. Historical Sites Gallery */}
+            <section id="gallery" className="py-24 px-4 relative">
+                <div className="max-w-7xl mx-auto">
+                    <div className="flex flex-col md:flex-row justify-between items-end mb-16 gap-6">
                         <div className="space-y-4">
-                            <span className="font-display text-xs uppercase tracking-[0.5em] text-heritage-gold">Vault Curation</span>
-                            <h2 className="text-4xl md:text-6xl font-display font-bold text-heritage-paper leading-tight">
-                                Featured <br /> <span className="italic font-serif text-heritage-gold">Fragments</span>
+                            <span className="font-future text-heritage-gold text-xs tracking-[0.4em] uppercase">Historical Repository</span>
+                            <h2 className="text-4xl md:text-6xl font-display font-bold text-white">
+                                Ancient <span className="text-heritage-gold italic">Foundations</span>
                             </h2>
                         </div>
-                        <p className="max-w-md text-heritage-paper/50 font-serif italic text-lg pb-2">
-                            "To understand the future, one must first touch the dust of the past."
-                        </p>
-                    </div>
-
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-12">
-                        <ArtifactCard image="https://images.unsplash.com/photo-1518709268805-4e9042af9f23?auto=format&fit=crop&q=80&w=800" title="Ancient Manuscript" date="12th Century" origin="Byzantine Empire" />
-                        <ArtifactCard image="https://images.unsplash.com/photo-1594787318286-3d835c1d207f?auto=format&fit=crop&q=80&w=800" title="Bronze Age Helmet" date="800 BC" origin="Aegean Sea" />
-                        <ArtifactCard image="https://images.unsplash.com/photo-1627916640411-96530664e1f7?auto=format&fit=crop&q=80&w=800" title="Temple Sculpture" date="4th Century" origin="Khmer Empire" />
-                    </div>
-                </div>
-            </section>
-
-            {/* 3. The Great Archive (Explore) */}
-            <section id="explore" className="py-32 parchment relative z-10 shadow-[0_0_100px_rgba(0,0,0,0.8)]">
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                    <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center mb-20 gap-12 text-heritage-dark border-b border-heritage-dark/10 pb-12">
-                        <div>
-                            <h2 className="text-5xl md:text-7xl font-display font-bold tracking-tighter mb-4">
-                                The Great Archive
-                            </h2>
-                            <div className="flex items-center gap-6 font-display text-[10px] uppercase tracking-[0.3em] text-heritage-dark/60">
-                                <span className="flex items-center gap-2"><Globe size={12} /> 195+ Cultures</span>
-                                <span className="flex items-center gap-2"><Clock size={12} /> 1.2M Years</span>
+                        <div className="flex flex-col items-end gap-4">
+                            <div className="flex items-center gap-4 bg-white/5 p-2 border border-white/10 rounded-full">
+                                <button
+                                    onClick={() => setViewMode('present')}
+                                    className={`px-6 py-2 rounded-full font-future text-[10px] tracking-widest uppercase transition-all ${viewMode === 'present' ? 'bg-heritage-gold text-heritage-navy shadow-lg shadow-heritage-gold/20' : 'text-gray-400 hover:text-white'}`}
+                                >
+                                    Present
+                                </button>
+                                <button
+                                    onClick={() => setViewMode('future')}
+                                    className={`px-6 py-2 rounded-full font-future text-[10px] tracking-widest uppercase transition-all ${viewMode === 'future' ? 'bg-heritage-gold text-heritage-navy shadow-lg shadow-heritage-gold/20' : 'text-gray-400 hover:text-white'}`}
+                                >
+                                    2050 Simulation
+                                </button>
                             </div>
-                        </div>
-                        <div className="relative w-full lg:w-[450px] group">
-                            <input
-                                type="text"
-                                placeholder="Sieve through history..."
-                                className="w-full bg-transparent border-heritage-dark/20 border-2 py-4 px-12 focus:border-heritage-gold focus:outline-none font-serif italic text-xl transition-all"
-                            />
-                            <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-heritage-dark/30 w-6 h-6 group-focus-within:text-heritage-gold transition-colors" />
+                            <p className="max-w-sm text-right text-gray-500 font-sans italic text-sm border-r-2 border-heritage-gold/30 pr-6">
+                                "The past is our foundation, the future is our responsibility."
+                            </p>
                         </div>
                     </div>
 
-                    <div className="flex flex-wrap gap-4 mb-20">
-                        {filters.map((f) => (
-                            <button
-                                key={f.name}
-                                onClick={() => setActiveFilter(f.name)}
-                                className={`flex items-center gap-2 px-10 py-3 font-display text-[10px] uppercase tracking-widest transition-all border-2 ${activeFilter === f.name
-                                    ? 'bg-heritage-dark text-heritage-paper border-heritage-dark shadow-2xl scale-105'
-                                    : 'text-heritage-dark border-heritage-dark/10 hover:border-heritage-gold'
-                                    }`}
-                            >
-                                {f.icon} {f.name}
-                            </button>
-                        ))}
-                    </div>
-
-                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-12">
-                        {artifacts.map((item, idx) => (
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+                        {ethiopianSites.map((site) => (
                             <motion.div
-                                key={item.id}
-                                initial={{ opacity: 0, y: 30 }}
-                                whileInView={{ opacity: 1, y: 0 }}
-                                transition={{ delay: idx * 0.1 }}
-                                className="group cursor-pointer"
+                                key={site.id}
+                                whileHover={{ y: -10 }}
+                                onClick={() => setSelectedSite(site)}
+                                className="glass-card group cursor-pointer overflow-hidden border border-white/5 hover:border-heritage-gold/50 transition-all duration-500"
                             >
-                                <div className="relative aspect-[3/4] overflow-hidden mb-6 shadow-2xl border-4 border-white">
-                                    <img src={item.image} alt={item.title} className="w-full h-full object-cover grayscale-[0.3] group-hover:grayscale-0 transition-all duration-1000 group-hover:scale-110" />
-                                    <div className="absolute inset-0 bg-heritage-dark/10 group-hover:bg-transparent transition-all" />
+                                <div className="aspect-[4/5] relative overflow-hidden">
+                                    <img
+                                        src={site.image}
+                                        alt={site.name}
+                                        className={`w-full h-full object-cover transition-all duration-1000 scale-110 group-hover:scale-100 ${viewMode === 'future' ? 'sepia-[0.3] contrast-125 saturate-125 brightness-110' : 'grayscale group-hover:grayscale-0'}`}
+                                    />
+                                    {viewMode === 'future' && (
+                                        <div className="absolute inset-0 bg-heritage-gold/10 animate-pulse pointer-events-none" />
+                                    )}
+                                    <div className="absolute inset-0 bg-gradient-to-t from-heritage-navy via-transparent to-transparent opacity-80" />
+                                    <div className="absolute bottom-6 left-6 right-6">
+                                        <div className="flex items-center gap-2 text-heritage-gold mb-1">
+                                            {viewMode === 'future' ? <Zap size={10} className="animate-pulse" /> : <MapPin size={12} />}
+                                            <span className="text-[10px] uppercase tracking-widest font-future">
+                                                {viewMode === 'future' ? 'SCANNING COORDINATES...' : site.location.split(',')[0]}
+                                            </span>
+                                        </div>
+                                        <h3 className="text-2xl font-display font-bold text-white mb-4">{site.name}</h3>
+                                        <div className="flex flex-col gap-3">
+                                            <button
+                                                onClick={(e) => { e.stopPropagation(); setSelectedSite(site); setViewMode('present'); }}
+                                                className="flex items-center gap-2 text-[10px] uppercase tracking-[0.2em] font-future text-gray-400 hover:text-white transition-all"
+                                            >
+                                                History <ChevronRight size={14} />
+                                            </button>
+                                            <button
+                                                onClick={(e) => {
+                                                    e.stopPropagation();
+                                                    setSelectedSite(site);
+                                                    setViewMode('future');
+                                                    setTimeout(() => {
+                                                        document.getElementById('detail-view')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                                                    }, 100);
+                                                }}
+                                                className="flex items-center gap-2 text-[10px] uppercase tracking-[0.2em] font-future text-heritage-gold hover:gap-4 transition-all"
+                                            >
+                                                See in 2050 <Zap size={10} />
+                                            </button>
+                                        </div>
+                                    </div>
                                 </div>
-                                <h3 className="font-display font-bold text-xl text-heritage-dark group-hover:text-heritage-accent transition-colors mb-1">
-                                    {item.title}
-                                </h3>
-                                <p className="text-[10px] font-display uppercase tracking-widest text-heritage-dark/40">{item.type} // REFERENCE ID: 0x{item.id}AF</p>
                             </motion.div>
                         ))}
-                        <div className="col-span-1 sm:col-span-2 lg:col-span-4 py-12 flex justify-center">
-                            <button className="px-12 py-4 border-2 border-heritage-dark/10 font-display text-[10px] uppercase tracking-widest hover:bg-heritage-dark hover:text-heritage-paper transition-all">
-                                Load More From The Vault
+                    </div>
+                </div>
+            </section>
+
+            {/* 3. Detail & 2050 Future Projection */}
+            <AnimatePresence>
+                {selectedSite && (
+                    <motion.section
+                        id="detail-view"
+                        initial={{ opacity: 0, height: 0 }}
+                        animate={{ opacity: 1, height: 'auto' }}
+                        exit={{ opacity: 0, height: 0 }}
+                        className="py-24 bg-black/40 border-y border-heritage-gold/10 overflow-hidden"
+                    >
+                        <div className="max-w-7xl mx-auto px-4">
+                            <div className="grid lg:grid-cols-2 gap-16 items-start">
+                                {/* Left: Info & Visuals */}
+                                <div className="space-y-12">
+                                    <div className="flex justify-between items-start">
+                                        <div>
+                                            <h2 className="text-5xl md:text-7xl font-display font-bold text-white mb-4">
+                                                {selectedSite.name}
+                                            </h2>
+                                            <p className="flex items-center gap-3 text-heritage-gold/80 font-future text-xs tracking-widest uppercase">
+                                                <Globe size={14} /> {selectedSite.unescoStatus}
+                                            </p>
+                                        </div>
+                                        <button
+                                            onClick={() => setSelectedSite(null)}
+                                            className="text-gray-500 hover:text-white transition-colors"
+                                        >
+                                            ✕ Close
+                                        </button>
+                                    </div>
+
+                                    <div className="glass-card p-8 border-heritage-gold/20">
+                                        <div className="flex border-b border-white/10 mb-8">
+                                            <button
+                                                onClick={() => setViewMode('present')}
+                                                className={`pb-4 px-6 font-future text-xs tracking-widest uppercase transition-all ${viewMode === 'present' ? 'text-heritage-gold border-b-2 border-heritage-gold' : 'text-gray-500 hover:text-white'}`}
+                                            >
+                                                History & Significance
+                                            </button>
+                                            <button
+                                                onClick={() => setViewMode('future')}
+                                                className={`pb-4 px-6 font-future text-xs tracking-widest uppercase transition-all ${viewMode === 'future' ? 'text-heritage-gold border-b-2 border-heritage-gold' : 'text-gray-500 hover:text-white'}`}
+                                            >
+                                                2050 Vision
+                                            </button>
+                                        </div>
+
+                                        <div className="min-h-[300px]">
+                                            {viewMode === 'present' ? (
+                                                <motion.div
+                                                    initial={{ opacity: 0, x: -20 }}
+                                                    animate={{ opacity: 1, x: 0 }}
+                                                    className="space-y-6"
+                                                >
+                                                    <p className="text-xl text-gray-300 font-sans leading-relaxed">
+                                                        {selectedSite.description}
+                                                    </p>
+                                                    <div className="space-y-4 pt-4">
+                                                        <h4 className="text-heritage-gold font-future text-xs tracking-widest uppercase">Historical Context</h4>
+                                                        <p className="text-gray-400 italic font-sans">{selectedSite.history}</p>
+                                                    </div>
+                                                    <div className="grid grid-cols-2 gap-8 pt-8 border-t border-white/5">
+                                                        <div>
+                                                            <div className="text-3xl font-display font-bold text-white mb-1">850k+</div>
+                                                            <div className="text-[10px] uppercase tracking-widest text-gray-500 font-future">Annual Visitors</div>
+                                                        </div>
+                                                        <div>
+                                                            <div className="text-3xl font-display font-bold text-white mb-1">#1</div>
+                                                            <div className="text-[10px] uppercase tracking-widest text-gray-500 font-future">Preservation Rank</div>
+                                                        </div>
+                                                    </div>
+                                                </motion.div>
+                                            ) : (
+                                                <motion.div
+                                                    initial={{ opacity: 0, x: 20 }}
+                                                    animate={{ opacity: 1, x: 0 }}
+                                                    className="space-y-8"
+                                                >
+                                                    <div className="grid gap-6">
+                                                        <div className="glass-card p-6 border-l-4 border-heritage-gold bg-heritage-gold/5">
+                                                            <div className="flex items-center gap-3 text-heritage-gold mb-3">
+                                                                <Zap size={18} />
+                                                                <h4 className="font-future font-bold tracking-widest text-xs uppercase">AI Preservation</h4>
+                                                            </div>
+                                                            <p className="text-gray-300 text-sm leading-relaxed">{selectedSite.future2050.preservation}</p>
+                                                        </div>
+                                                        <div className="glass-card p-6 border-l-4 border-heritage-gold bg-heritage-gold/5">
+                                                            <div className="flex items-center gap-3 text-heritage-gold mb-3">
+                                                                <Activity size={18} />
+                                                                <h4 className="font-future font-bold tracking-widest text-xs uppercase">Climate Resilience</h4>
+                                                            </div>
+                                                            <p className="text-gray-300 text-sm leading-relaxed">{selectedSite.future2050.impact}</p>
+                                                        </div>
+                                                        <div className="glass-card p-6 border-l-4 border-heritage-gold bg-heritage-gold/5">
+                                                            <div className="flex items-center gap-3 text-heritage-gold mb-3">
+                                                                <Globe size={18} />
+                                                                <h4 className="font-future font-bold tracking-widest text-xs uppercase">Digital VR Experience</h4>
+                                                            </div>
+                                                            <p className="text-gray-300 text-sm leading-relaxed">{selectedSite.future2050.tourism}</p>
+                                                        </div>
+                                                    </div>
+                                                </motion.div>
+                                            )}
+                                        </div>
+                                    </div>
+                                </div>
+
+                                {/* Right: Simulation Visual */}
+                                <div className="sticky top-24">
+                                    <div className="relative aspect-square glass-card overflow-hidden p-2 group">
+                                        <div className="absolute inset-0 bg-heritage-gold/10 animate-pulse opacity-20 pointer-events-none" />
+                                        <div className="relative w-full h-full overflow-hidden">
+                                            <img
+                                                src={selectedSite.image}
+                                                className={`w-full h-full object-cover transition-all duration-1000 ${viewMode === 'future' ? 'sepia-[0.5] contrast-125 saturate-150 brightness-110' : 'grayscale'}`}
+                                                alt="Simulation"
+                                            />
+                                            {viewMode === 'future' && (
+                                                <div className="absolute inset-0">
+                                                    <div className="absolute top-10 left-10 w-32 h-32 border-t-2 border-l-2 border-heritage-gold opacity-50" />
+                                                    <div className="absolute bottom-10 right-10 w-32 h-32 border-b-2 border-r-2 border-heritage-gold opacity-50" />
+                                                    <div className="absolute top-1/2 left-0 w-full h-px bg-heritage-gold/30 animate-scan" />
+                                                    <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(212,175,55,0.1)_0%,transparent_70%)]" />
+                                                </div>
+                                            )}
+                                        </div>
+                                        <div className="absolute bottom-8 left-8 right-8 flex justify-between items-center bg-black/60 backdrop-blur-md p-4 border border-white/10">
+                                            <div className="flex items-center gap-4">
+                                                <div className="w-3 h-3 rounded-full bg-heritage-gold animate-ping" />
+                                                <span className="font-future text-[10px] tracking-[0.3em] uppercase">{viewMode === 'future' ? '2050 Simulation Active' : 'Present Day Feed'}</span>
+                                            </div>
+                                            <div className="font-future text-xs text-heritage-gold">
+                                                {viewMode === 'future' ? 'LAT: 11.601° N | LON: 39.041° E' : 'SIGNAL: STABLE'}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </motion.section>
+                )}
+            </AnimatePresence>
+
+            {/* 4. Heritage Risk Dashboard */}
+            <section id="dashboard" className="py-24 relative overflow-hidden">
+                <div className="max-w-7xl mx-auto px-4">
+                    <div className="text-center mb-16 space-y-4">
+                        <span className="font-future text-heritage-gold text-xs tracking-[0.4em] uppercase">Intelligence Monitor</span>
+                        <h2 className="text-4xl md:text-6xl font-display font-bold">Heritage <span className="text-heritage-gold">Risk Dashboard</span></h2>
+                    </div>
+
+                    <div className="grid md:grid-cols-3 gap-8">
+                        {/* Column 1: Indicators */}
+                        <div className="space-y-8">
+                            <RiskFactor label="Climate Risk Level" value={68} icon={<CloudRain className="text-blue-400" />} color="blue" />
+                            <RiskFactor label="Urbanization Impact" value={42} icon={<AlertTriangle className="text-amber-400" />} color="amber" />
+                            <RiskFactor label="Tourism Pressure" value={89} icon={<Activity className="text-red-400" />} color="red" />
+                        </div>
+
+                        {/* Column 2: Chart (CSS Animation) */}
+                        <div className="glass-card p-10 flex flex-col justify-between min-h-[400px]">
+                            <h4 className="font-future text-xs tracking-widest uppercase mb-10">Digital Preservation Progress</h4>
+                            <div className="flex-1 flex items-end gap-4 h-full">
+                                {[35, 48, 62, 58, 75, 82, 94].map((h, i) => (
+                                    <div key={i} className="flex-1 flex flex-col items-center gap-4 group">
+                                        <motion.div
+                                            initial={{ height: 0 }}
+                                            whileInView={{ height: `${h}%` }}
+                                            transition={{ duration: 1.5, delay: i * 0.1 }}
+                                            className="w-full bg-heritage-gold/20 group-hover:bg-heritage-gold/40 border-t-2 border-heritage-gold transition-all relative"
+                                        >
+                                            <div className="absolute -top-8 left-1/2 -translate-x-1/2 text-[10px] font-future opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">{h}%</div>
+                                        </motion.div>
+                                        <span className="font-future text-[8px] tracking-tighter text-gray-500 uppercase">{2018 + i}</span>
+                                    </div>
+                                ))}
+                            </div>
+                            <div className="mt-10 flex items-center gap-4 text-xs font-future text-heritage-gold/60">
+                                <TrendingDown size={14} />
+                                <span>+12.4% Integrity Growth YoY</span>
+                            </div>
+                        </div>
+
+                        {/* Column 3: Live Feed */}
+                        <div className="glass-card p-8 space-y-8">
+                            <h4 className="font-future text-xs tracking-widest uppercase border-b border-white/10 pb-4">Live preservation Logs</h4>
+                            <div className="space-y-6">
+                                <LogEntry time="02:14:55" event="Lalibela: Structural Scan Complete" status="Verified" />
+                                <LogEntry time="01:45:12" event="Axum: Atmospheric Adjust Opt" status="Active" />
+                                <LogEntry time="23:12:08" event="Fasil: Drone Swarm Replenish" status="Maintenance" />
+                                <LogEntry time="22:30:45" event="Harar: Ground Moisture Alert" status="Warning" />
+                            </div>
+                            <button className="w-full py-4 border border-heritage-gold/20 font-future text-[10px] tracking-widest uppercase hover:bg-heritage-gold/10 transition-all">
+                                Open Sentinel Terminal
                             </button>
                         </div>
                     </div>
                 </div>
             </section>
 
-            {/* 4. The Digital Legacy (About) */}
-            <section id="legacy" className="py-40 bg-heritage-dark relative overflow-hidden">
-                <div className="absolute top-0 right-0 w-1/2 h-full bg-heritage-wood/10 -skew-x-12 translate-x-1/2" />
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-                    <div className="grid lg:grid-cols-2 gap-24 items-center">
-                        <div className="space-y-12">
-                            <div className="space-y-4">
-                                <span className="font-display text-xs uppercase tracking-[0.8em] text-heritage-gold">The Mission</span>
-                                <h2 className="text-5xl md:text-7xl font-display font-bold text-heritage-paper uppercase leading-none">
-                                    The <br /> Digital <span className="text-heritage-gold italic font-serif lowercase">Legacy</span>
-                                </h2>
-                            </div>
-                            <div className="space-y-6 text-heritage-paper/60 font-serif text-xl leading-relaxed italic">
-                                <p>
-                                    "We believe that the stories of old are not meant to be buried by time, but illuminated by technology."
-                                </p>
-                                <p className="text-lg non-italic leading-loose">
-                                    The Digital Heritage Vault is a global initiative dedicated to the absolute preservation of human history. By digitizing artifacts in high-fidelity and recording oral traditions, we ensure that the cultural tapestry of our ancestors remains vibrant for the generations of tomorrow.
-                                </p>
-                            </div>
-                            <div className="pt-8 grid grid-cols-2 gap-12 border-t border-heritage-gold/10">
-                                <div>
-                                    <h4 className="font-display text-heritage-gold text-lg mb-2">Immutable</h4>
-                                    <p className="text-xs text-heritage-paper/40 font-display uppercase tracking-widest">Digital Records</p>
-                                </div>
-                                <div>
-                                    <h4 className="font-display text-heritage-gold text-lg mb-2">Universal</h4>
-                                    <p className="text-xs text-heritage-paper/40 font-display uppercase tracking-widest">Global Access</p>
-                                </div>
-                            </div>
-                        </div>
-                        <div className="relative">
-                            <div className="aspect-[4/5] wood-panel p-4 rotate-3 animate-float">
-                                <img
-                                    src="https://images.unsplash.com/photo-1461360228754-6e81c478c882?auto=format&fit=crop&q=80&w=800"
-                                    className="w-full h-full object-cover grayscale brightness-50 contrast-125"
-                                    alt="Historical Preservation"
-                                />
-                            </div>
-                            <div className="absolute -bottom-10 -left-10 w-48 h-48 border-2 border-heritage-gold/20 -z-10" />
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-            {/* 5. The Archivist's Workshop (Management Hub) */}
-            <section id="workshop" className="py-32 bg-heritage-wood/20 relative">
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                    <div className="flex items-center gap-8 mb-20 text-heritage-paper">
-                        <div className="h-px bg-heritage-gold/20 flex-1" />
-                        <h2 className="text-3xl font-display font-bold uppercase tracking-[0.4em] text-center">
-                            Archivist's <span className="text-heritage-gold">Workshop</span>
-                        </h2>
-                        <div className="h-px bg-heritage-gold/20 flex-1" />
-                    </div>
-
-                    <div className="grid lg:grid-cols-3 gap-16">
-                        {/* Manage Assets */}
-                        <div className="lg:col-span-2 space-y-10">
-                            <div className="flex justify-between items-center">
-                                <h3 className="font-display text-sm tracking-widest uppercase text-heritage-paper/60">Registry Management</h3>
-                                <button className="flex items-center gap-2 text-heritage-gold font-display text-[10px] uppercase tracking-widest hover:text-heritage-paper">
-                                    <Plus size={14} /> Add New Record
-                                </button>
-                            </div>
-                            <div className="space-y-4">
-                                <WorkshopRecord title="Ancient Vase" status="Verified" date="2 hours ago" />
-                                <WorkshopRecord title="Old Manuscript" status="Pending" date="1 day ago" />
-                                <WorkshopRecord title="Vintage Camera" status="Archived" date="3 days ago" />
-                            </div>
-                        </div>
-
-                        {/* Quick Registry Form */}
-                        <div className="bg-heritage-dark/50 p-8 border border-heritage-gold/10 relative">
-                            <div className="absolute -top-3 left-8 bg-heritage-gold text-heritage-dark px-4 py-1 font-display text-[10px] uppercase font-bold tracking-widest">
-                                Quick Intake
-                            </div>
-                            <form className="space-y-6 pt-4">
-                                <div className="space-y-2">
-                                    <label className="text-[10px] uppercase tracking-widest text-heritage-paper/40">Item Designation</label>
-                                    <input type="text" className="w-full bg-heritage-dark/50 border border-heritage-gold/20 p-3 text-heritage-paper focus:outline-none focus:border-heritage-gold transition-colors" />
-                                </div>
-                                <div className="space-y-2">
-                                    <label className="text-[10px] uppercase tracking-widest text-heritage-paper/40">Historical Era</label>
-                                    <select className="w-full bg-heritage-dark/50 border border-heritage-gold/20 p-3 text-heritage-paper focus:outline-none">
-                                        <option>Ancient Era</option>
-                                        <option>Medieval</option>
-                                        <option>Industrial</option>
-                                    </select>
-                                </div>
-                                <button className="w-full bg-heritage-gold text-heritage-dark py-4 font-display text-[10px] uppercase font-bold tracking-widest hover:bg-heritage-paper transition-all">
-                                    Begin Digital Ingestion
-                                </button>
-                            </form>
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-            {/* 6. Guardian Access (Auth Section) */}
-            <section id="auth" className="py-40 bg-heritage-dark border-t border-heritage-gold/5">
-                <div className="max-w-4xl mx-auto px-4 text-center space-y-16">
-                    <div className="space-y-6">
-                        <h2 className="text-4xl md:text-6xl font-display font-bold text-heritage-paper uppercase tracking-tighter">
-                            Guardian <span className="text-heritage-gold">Access</span>
-                        </h2>
-                        <p className="text-heritage-paper/40 font-serif italic text-lg">
-                            Request your archival credentials to contribute to the global registry.
-                        </p>
-                    </div>
-
-                    <div className="flex flex-col sm:flex-row gap-6 justify-center">
-                        <button className="px-12 py-5 bg-heritage-gold text-heritage-dark font-display text-xs uppercase font-bold tracking-[0.3em] hover:bg-heritage-paper transition-all">
-                            Sign In to Vault
-                        </button>
-                        <button className="px-12 py-5 border-2 border-heritage-gold/20 text-heritage-paper font-display text-xs uppercase font-bold tracking-[0.3em] hover:border-heritage-gold transition-all">
-                            Register as Curator
-                        </button>
-                    </div>
-                </div>
-            </section>
-
-            {/* 7. Metrics Section */}
-            <section id="metrics" className="py-32 bg-heritage-wood/5">
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-16">
-                        <StatBox icon={<Database />} label="Historical Records" value="1,280" />
-                        <StatBox icon={<Users />} label="Member Archivists" value="342" />
-                        <StatBox icon={<TrendingUp />} label="Vault Integrity" value="99.9%" />
-                    </div>
+            {/* Final CTA */}
+            <section className="py-40 bg-heritage-gold/5 flex flex-col items-center text-center px-4">
+                <Shield className="w-16 h-16 text-heritage-gold mb-12 animate-pulse" />
+                <h2 className="text-4xl md:text-6xl font-display font-bold text-white mb-8 max-w-3xl">
+                    Our Past Deserves <br />
+                    <span className="text-heritage-gold italic">A Permanent Future.</span>
+                </h2>
+                <div className="flex flex-col sm:flex-row gap-6">
+                    <button className="px-12 py-5 bg-heritage-gold text-heritage-navy font-future font-bold text-xs uppercase tracking-[0.3em] hover:brightness-110 transition-all">
+                        Donate to Preservation
+                    </button>
+                    <button className="px-12 py-5 border border-heritage-gold text-heritage-gold font-future font-bold text-xs uppercase tracking-[0.3em] hover:bg-heritage-gold hover:text-heritage-navy transition-all">
+                        Become a Sentinel
+                    </button>
                 </div>
             </section>
 
@@ -256,51 +322,36 @@ const Home = () => {
     );
 };
 
-const ArtifactCard = ({ image, title, date, origin }) => (
-    <motion.div
-        whileHover={{ y: -10 }}
-        className="group wood-panel p-2 rounded-sm cursor-pointer border border-heritage-gold/5"
-    >
-        <div className="aspect-[4/3] overflow-hidden mb-6 relative">
-            <img src={image} alt={title} className="w-full h-full object-cover grayscale brightness-50 group-hover:grayscale-0 group-hover:brightness-100 transition-all duration-700" />
-            <div className="absolute inset-0 bg-heritage-gold/5" />
-        </div>
-        <div className="p-4 space-y-2">
-            <h3 className="text-xl font-display font-bold text-heritage-paper group-hover:text-heritage-gold transition-colors tracking-tight">{title}</h3>
-            <p className="text-[10px] font-display text-heritage-paper/40 uppercase tracking-[0.2em]">{date} // {origin}</p>
-        </div>
-    </motion.div>
-);
-
-const WorkshopRecord = ({ title, status, date }) => (
-    <div className="bg-heritage-dark/40 p-5 flex items-center justify-between border border-heritage-gold/5 hover:border-heritage-gold/20 transition-all group">
-        <div className="flex gap-6 items-center">
-            <div className="w-2 h-2 rounded-full bg-heritage-gold animate-pulse" />
-            <div>
-                <h4 className="font-display text-heritage-paper tracking-widest uppercase text-sm mb-1">{title}</h4>
-                <p className="text-[10px] font-serif italic text-heritage-paper/30">{date}</p>
+const RiskFactor = ({ label, value, icon, color }) => (
+    <div className="glass-card p-6 border-white/5">
+        <div className="flex justify-between items-center mb-4">
+            <div className="flex items-center gap-3">
+                {icon}
+                <span className="font-future text-[10px] tracking-widest uppercase text-gray-400">{label}</span>
             </div>
+            <span className="font-future text-xs text-white">{value}%</span>
         </div>
-        <div className="flex gap-8 items-center">
-            <span className="text-[10px] font-display uppercase tracking-widest text-heritage-gold/60">{status}</span>
-            <div className="flex gap-3">
-                <Edit3 size={14} className="text-heritage-paper/30 hover:text-heritage-gold cursor-pointer" />
-                <Trash2 size={14} className="text-heritage-paper/30 hover:text-red-500 cursor-pointer" />
-            </div>
+        <div className="w-full h-1 bg-white/5 rounded-full overflow-hidden">
+            <motion.div
+                initial={{ width: 0 }}
+                whileInView={{ width: `${value}%` }}
+                transition={{ duration: 1 }}
+                className={`h-full bg-current ${color === 'blue' ? 'text-blue-500' : color === 'amber' ? 'text-amber-500' : 'text-red-500'}`}
+                style={{ backgroundColor: 'currentColor' }}
+            />
         </div>
     </div>
 );
 
-const StatBox = ({ icon, label, value }) => (
-    <div className="flex flex-col items-center text-center space-y-6 group">
-        <div className="w-16 h-16 border border-heritage-gold/20 flex items-center justify-center text-heritage-gold group-hover:border-heritage-gold transition-all duration-500">
-            {icon}
-        </div>
-        <div>
-            <p className="text-5xl font-display font-bold text-heritage-paper mb-2 tracking-tighter">{value}</p>
-            <p className="text-[10px] uppercase tracking-[0.4em] text-heritage-paper/30 font-bold">{label}</p>
+const LogEntry = ({ time, event, status }) => (
+    <div className="flex gap-4 items-start group">
+        <div className="font-future text-[9px] text-gray-600 pt-1">{time}</div>
+        <div className="flex-1">
+            <div className="text-xs font-sans text-gray-300 group-hover:text-heritage-gold transition-colors">{event}</div>
+            <div className="text-[8px] font-future uppercase tracking-widest text-gray-600 mt-1">{status}</div>
         </div>
     </div>
 );
 
 export default Home;
+
