@@ -19,9 +19,11 @@ app.use(cors());
 
 // Route files
 const artifacts = require('./routes/artifactRoutes');
+const future = require('./routes/futureRoutes');
 
 // Mount routers
 app.use('/api/artifacts', artifacts);
+app.use('/api/future', future);
 
 // Basic route
 app.get('/', (req, res) => {

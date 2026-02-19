@@ -35,7 +35,39 @@ const AnimatedNumber = ({ value, suffix = "" }) => {
 
 const SmartCity = () => {
     const [currentYear, setCurrentYear] = useState(2025);
-    const data = cityData.find(d => d.year === currentYear) || cityData[0];
+    const [metrics, setMetrics] = useState([]);
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        const fetchMetrics = async () => {
+            try {
+                const res = await fetch('http://localhost:5000/api/future/metrics');
+                const json = await res.json();
+                if (json.success) {
+                    // Filter and format city_stat metrics
+                    const cityStats = json.data.filter(m => m.type === 'city_stat');
+                    // Group by year for the chart
+                    const years = [2025, 2028, 2031, 2034, 2037, 2040];
+                    const formattedData = years.map(y => {
+                        const population = cityStats.find(m => m.year === y && m.name === 'population')?.value || 0;
+                        const energy = cityStats.find(m => m.year === y && m.name === 'energy')?.value || 0;
+                        const automation = cityStats.find(m => m.year === y && m.name === 'automation')?.value || 0;
+                        return { year: y, population, energy, automation };
+                    });
+                    setMetrics(formattedData);
+                }
+            } catch (err) {
+                console.error("Failed to fetch metrics:", err);
+            } finally {
+                setLoading(false);
+            }
+        };
+        fetchMetrics();
+    }, []);
+
+    const data = metrics.find(d => d.year === currentYear) || metrics[0] || { population: 0, energy: 0, automation: 0 };
+
+    if (loading) return <div className="py-24 text-center">Loading Future Data...</div>;
 
     return (
         <section id="simulation" className="py-24 px-4 bg-futuristic-bg relative overflow-hidden">
@@ -103,7 +135,7 @@ const SmartCity = () => {
                 {/* Chart */}
                 <div className="h-[400px] glass-card p-6">
                     <ResponsiveContainer width="100%" height="100%">
-                        <AreaChart data={cityData}>
+                        <AreaChart data={metrics}>
                             <defs>
                                 <linearGradient id="colorPop" x1="0" y1="0" x2="0" y2="1">
                                     <stop offset="5%" stopColor="#00f2ff" stopOpacity={0.3} />
@@ -132,5 +164,6 @@ const SmartCity = () => {
         </section>
     );
 };
+
 
 export default SmartCity;

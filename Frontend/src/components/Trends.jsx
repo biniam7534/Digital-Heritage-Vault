@@ -1,8 +1,37 @@
+import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { trendStats } from '../data/mockData';
 import { BarChart, Bar, ResponsiveContainer, XAxis, YAxis, Tooltip } from 'recharts';
 
 const Trends = () => {
+    const [trends, setTrends] = useState([]);
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        const fetchTrends = async () => {
+            try {
+                const res = await fetch('http://localhost:5000/api/future/metrics');
+                const json = await res.json();
+                if (json.success) {
+                    const globalTrends = json.data
+                        .filter(m => m.type === 'global_trend')
+                        .map(m => ({
+                            label: m.name,
+                            value: m.value,
+                            color: m.category
+                        }));
+                    setTrends(globalTrends);
+                }
+            } catch (err) {
+                console.error("Failed to fetch trends:", err);
+            } finally {
+                setLoading(false);
+            }
+        };
+        fetchTrends();
+    }, []);
+
+    if (loading) return null;
+
     return (
         <section id="trends" className="py-24 px-4 bg-futuristic-bg border-t border-gray-900">
             <div className="max-w-7xl mx-auto">
@@ -17,7 +46,7 @@ const Trends = () => {
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
-                    {trendStats.map((stat, idx) => (
+                    {trends.map((stat, idx) => (
                         <motion.div
                             key={idx}
                             initial={{ opacity: 0, y: 20 }}
@@ -45,7 +74,7 @@ const Trends = () => {
                 <div className="glass-card p-8 h-[350px]">
                     <h3 className="text-lg font-bold mb-8 uppercase tracking-widest">Growth Comparison</h3>
                     <ResponsiveContainer width="100%" height="100%">
-                        <BarChart data={trendStats}>
+                        <BarChart data={trends}>
                             <XAxis dataKey="label" stroke="#666" fontSize={12} />
                             <YAxis hide />
                             <Tooltip
@@ -57,7 +86,7 @@ const Trends = () => {
                                 radius={[4, 4, 0, 0]}
                                 className="fill-futuristic-accent"
                             >
-                                {trendStats.map((entry, index) => (
+                                {trends.map((entry, index) => (
                                     <motion.rect
                                         key={`cell-${index}`}
                                         initial={{ height: 0, y: 300 }}

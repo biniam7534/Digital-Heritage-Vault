@@ -16,10 +16,26 @@ const Predictor = () => {
     const handlePredict = () => {
         setIsPredicting(true);
         // Simulate AI "calculating"
-        setTimeout(() => {
+        setTimeout(async () => {
             const prediction = predictFuture(formData.skillLevel, formData.field, formData.hours);
             setResult(prediction);
             setIsPredicting(false);
+
+            // Save to backend
+            try {
+                await fetch('http://localhost:5000/api/future/predict', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        ...formData,
+                        careerTitle: prediction.careerTitle,
+                        projection: prediction.projection,
+                        roadmap: prediction.roadmap
+                    })
+                });
+            } catch (err) {
+                console.error("Failed to save prediction:", err);
+            }
         }, 1500);
     };
 
