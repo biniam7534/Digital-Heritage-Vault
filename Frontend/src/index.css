@@ -1,80 +1,77 @@
 @import "tailwindcss";
-@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400..900&family=Crimson+Pro:ital,wght@0,200..900;1,200..900&family=Playfair+Display:ital,wght@0,400..900;1,400..900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&family=Orbitron:wght@400;700;900&display=swap');
 
 @theme {
-  --font-serif: "Crimson Pro", "serif";
-  --font-display: "Cinzel", "serif";
-  --font-accent: "Playfair Display", "serif";
+  --font-sans: "Inter", "sans-serif";
+  --font-future: "Orbitron", "sans-serif";
 
-  --color-heritage-wood: #2a1a14;
-  --color-heritage-dark: #1a0f0a;
-  --color-heritage-gold: #c5a059;
-  --color-heritage-paper: #e8dcc4;
-  --color-heritage-paper-dark: #d1bfa3;
-  --color-heritage-accent: #8b4513;
+  --color-futuristic-bg: #050505;
+  --color-futuristic-accent: #00f2ff;
+  --color-futuristic-purple: #7000ff;
+  --color-glass: rgba(255, 255, 255, 0.05);
 
-  --color-background: var(--color-heritage-dark);
-  --color-text: var(--color-heritage-paper);
+  --color-background: var(--color-futuristic-bg);
+  --color-text: #ffffff;
 }
 
 html {
   scroll-behavior: smooth;
 }
 
-:root {
-  --heritage-wood: #2a1a14;
-  --heritage-gold: #c5a059;
-  --heritage-paper: #e8dcc4;
-}
-
 body {
   margin: 0;
-  font-family: var(--font-serif);
-  background-color: var(--color-heritage-dark);
-  color: var(--color-heritage-paper);
+  font-family: var(--font-sans);
+  background-color: var(--color-futuristic-bg);
+  color: #fff;
   -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
 }
 
 h1,
 h2,
 h3,
-h4,
-h5,
-h6 {
-  font-family: var(--font-display);
-  letter-spacing: 0.05em;
+h4 {
+  font-family: var(--font-future);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
 }
 
-.parchment {
-  background-color: var(--color-heritage-paper);
-  color: var(--color-heritage-dark);
-  border: 1px solid var(--color-heritage-paper-dark);
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-  background-image: url('https://www.transparenttextures.com/patterns/paper-fibers.png');
+.glass-card {
+  background: rgba(255, 255, 255, 0.03);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 1rem;
+  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
 }
 
-.wood-panel {
-  background-color: var(--color-heritage-wood);
-  border: 1px solid var(--color-heritage-accent);
-  box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.5);
+.futuristic-gradient {
+  background: linear-gradient(135deg, var(--color-futuristic-purple) 0%, var(--color-futuristic-accent) 100%);
 }
 
-.gold-border {
-  border: 1px solid var(--color-heritage-gold);
+.floating-particles {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 0;
 }
 
-.gold-text {
-  color: var(--color-heritage-gold);
-}
-
-.glass-dark {
-  background: rgba(42, 26, 20, 0.7);
-  backdrop-filter: blur(8px);
-  border: 1px solid rgba(197, 160, 89, 0.2);
-}
-
-@layer base {
-  button {
-    cursor: pointer;
+@keyframes float {
+  0% {
+    transform: translateY(0px) rotate(0deg);
   }
+
+  50% {
+    transform: translateY(-20px) rotate(5deg);
+  }
+
+  100% {
+    transform: translateY(0px) rotate(0deg);
+  }
+}
+
+.animate-float {
+  animation: float 6s ease-in-out infinite;
 }
