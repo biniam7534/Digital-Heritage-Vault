@@ -6,94 +6,100 @@ const dotenv = require('dotenv');
 dotenv.config();
 
 // Load models
-const Artifact = require('./models/Artifact');
+const HeritageSite = require('./models/HeritageSite');
 const Metric = require('./models/Metric');
-const Prediction = require('./models/Prediction');
+const Log = require('./models/Log');
 
 // Connect to DB
 mongoose.connect(process.env.MONGO_URI);
 
-// Sample Future Metrics
-const metrics = [
-    // Smart City Data
-    { type: 'city_stat', name: 'population', value: 8.2, year: 2025, category: 'Growth' },
-    { type: 'city_stat', name: 'population', value: 8.5, year: 2028, category: 'Growth' },
-    { type: 'city_stat', name: 'population', value: 8.9, year: 2031, category: 'Growth' },
-    { type: 'city_stat', name: 'population', value: 9.3, year: 2034, category: 'Growth' },
-    { type: 'city_stat', name: 'population', value: 9.7, year: 2037, category: 'Growth' },
-    { type: 'city_stat', name: 'population', value: 10.1, year: 2040, category: 'Growth' },
-
-    { type: 'city_stat', name: 'energy', value: 35, year: 2025, category: 'Renewable' },
-    { type: 'city_stat', name: 'energy', value: 42, year: 2028, category: 'Renewable' },
-    { type: 'city_stat', name: 'energy', value: 55, year: 2031, category: 'Renewable' },
-    { type: 'city_stat', name: 'energy', value: 70, year: 2034, category: 'Renewable' },
-    { type: 'city_stat', name: 'energy', value: 85, year: 2037, category: 'Renewable' },
-    { type: 'city_stat', name: 'energy', value: 100, year: 2040, category: 'Renewable' },
-
-    { type: 'city_stat', name: 'automation', value: 15, year: 2025, category: 'AI' },
-    { type: 'city_stat', name: 'automation', value: 25, year: 2028, category: 'AI' },
-    { type: 'city_stat', name: 'automation', value: 40, year: 2031, category: 'AI' },
-    { type: 'city_stat', name: 'automation', value: 60, year: 2034, category: 'AI' },
-    { type: 'city_stat', name: 'automation', value: 80, year: 2037, category: 'AI' },
-    { type: 'city_stat', name: 'automation', value: 95, year: 2040, category: 'AI' },
-
-    // Global Trends Data
-    { type: 'global_trend', name: 'AI Adoption', value: 94, year: 2040, category: '#8884d8' },
-    { type: 'global_trend', name: 'Remote Work', value: 78, year: 2040, category: '#82ca9d' },
-    { type: 'global_trend', name: 'Climate Index', value: 62, year: 2040, category: '#ffc658' },
-    { type: 'global_trend', name: 'Digital Economy', value: 89, year: 2040, category: '#ff8042' },
+const sites = [
+    {
+        name: 'Lalibela',
+        location: 'Amhara Region, Ethiopia',
+        description: 'Famous for its 11 monolithic rock-hewn churches, carved out of volcanic tuff in the 12th century.',
+        image: 'https://images.unsplash.com/photo-1545620853-93d3b769ea87?auto=format&fit=crop&q=80&w=800',
+        unescoStatus: 'Inscribed in 1978',
+        history: 'Built during the reign of Saint Gebre Mesqel Lalibela, who sought to recreate Jerusalem in Ethiopia.',
+        future2050: {
+            preservation: 'AI-monitored climate-resistant nanomaterials will reinforce the volcanic tuff without altering its appearance.',
+            impact: 'Real-time structural health monitoring prevents erosion from intensified seasonal rains.',
+            tourism: 'Holographic guides and VR overlays allow visitors to see the carving process in real-time.',
+        }
+    },
+    {
+        name: 'Axum Obelisks',
+        location: 'Tigray Region, Ethiopia',
+        description: 'Towering monolithic stelae dating back to the 4th century, marking the tombs of ancient kings.',
+        image: 'https://images.unsplash.com/photo-1596464716127-f2a82984de30?auto=format&fit=crop&q=80&w=800',
+        unescoStatus: 'Inscribed in 1980',
+        history: 'The center of the Aksumite Empire, one of the four great powers of the ancient world alongside Rome and Persia.',
+        future2050: {
+            preservation: 'Underground seismic stabilizers and localized atmospheric control units protect the granite from micro-cracking.',
+            impact: 'Zero-impact foundation supports ensure stability despite urban expansion.',
+            tourism: 'Smart glass walkways provide interactive subsurface archaeological views.',
+        }
+    },
+    {
+        name: 'Fasil Ghebbi',
+        location: 'Gondar, Ethiopia',
+        description: 'The fortress-city of Emperor Fasilides, blending Ethiopian, Hindu, and Arab architectural styles.',
+        image: 'https://images.unsplash.com/photo-1545620853-294708703310?auto=format&fit=crop&q=80&w=800',
+        unescoStatus: 'Inscribed in 1979',
+        history: 'Served as the residence of the Ethiopian emperors during the 17th and 18th centuries.',
+        future2050: {
+            preservation: 'Automated drone swarms provide 24/7 maintenance and restoration using period-accurate synthetic stone.',
+            impact: 'Solar-powered climate management systems regulate humidity within the banquet halls.',
+            tourism: 'Neural-linked historical reenactments offer immersive glimpses into court life.',
+        }
+    },
+    {
+        name: 'Harar Jugol',
+        location: 'Harari Region, Ethiopia',
+        description: 'The fortified historic town, considered the fourth holiest city of Islam, with 110 mosques and 102 shrines.',
+        image: 'https://images.unsplash.com/photo-1545569341-9eb8b30979d9?auto=format&fit=crop&q=80&w=800',
+        unescoStatus: 'Inscribed in 2006',
+        history: 'Founded between the 7th and 11th centuries, it became a major commercial hub and center of Islamic learning.',
+        future2050: {
+            preservation: 'Bio-regenerative materials will strengthen the historic walls while allowing the structure to "breathe".',
+            impact: 'Smart drainage networks prevent water damage from rising groundwater levels.',
+            tourism: 'Digital twins of the entire city enable global researchers to study Harari architecture remotely.',
+        }
+    }
 ];
 
-const artifacts = [
-    {
-        title: 'Egyptian Sarcophagus',
-        type: 'Artifact',
-        image: 'https://images.unsplash.com/photo-1594787318286-3d835c1d207f?auto=format&fit=crop&q=80&w=600',
-        date: 'New Kingdom (1550–1070 BC)',
-        origin: 'Thebes, Egypt',
-        description: 'A finely decorated limestone sarcophagus belonging to a high-ranking official, featuring intricate hieroglyphics.',
-        status: 'Verified'
-    },
-    {
-        title: 'Medieval Sword',
-        type: 'Artifact',
-        image: 'https://images.unsplash.com/photo-1518709268805-4e9042af9f23?auto=format&fit=crop&q=80&w=600',
-        date: '14th Century',
-        origin: 'Northern Europe',
-        description: 'A well-preserved longsword with a wheel pommel and tapered blade, typical of chivalric warfare in the late Middle Ages.',
-        status: 'Verified'
-    },
-    {
-        title: 'Historical Document',
-        type: 'Document',
-        image: 'https://images.unsplash.com/photo-1627916640411-96530664e1f7?auto=format&fit=crop&q=80&w=600',
-        date: '12th Century',
-        origin: 'Byzantine Empire',
-        description: 'A vellum manuscript containing illuminated prayers and administrative records of the imperial court.',
-        status: 'Verified'
-    },
-    {
-        title: 'Native Pottery',
-        type: 'Artifact',
-        image: 'https://images.unsplash.com/photo-1605721911519-3dfeb3be25e7?auto=format&fit=crop&q=80&w=600',
-        date: 'Pre-Columbian Era',
-        origin: 'South America (Inca)',
-        description: 'Polychrome ceramic jar featuring geometric patterns and stylized animal motifs.',
-        status: 'Verified'
-    }
+const metrics = [
+    { type: 'climate_risk', label: 'Climate Risk Level', value: 68 },
+    { type: 'urbanization_impact', label: 'Urbanization Impact', value: 42 },
+    { type: 'tourism_pressure', label: 'Tourism Pressure', value: 89 },
+    { type: 'preservation_progress', label: '2018', value: 35, year: 2018 },
+    { type: 'preservation_progress', label: '2019', value: 48, year: 2019 },
+    { type: 'preservation_progress', label: '2020', value: 62, year: 2020 },
+    { type: 'preservation_progress', label: '2021', value: 58, year: 2021 },
+    { type: 'preservation_progress', label: '2022', value: 75, year: 2022 },
+    { type: 'preservation_progress', label: '2023', value: 82, year: 2023 },
+    { type: 'preservation_progress', label: '2024', value: 94, year: 2024 },
+];
+
+const logs = [
+    { time: '02:14:55', event: 'Lalibela: Structural Scan Complete', status: 'Verified' },
+    { time: '01:45:12', event: 'Axum: Atmospheric Adjust Opt', status: 'Active' },
+    { time: '23:12:08', event: 'Fasil: Drone Swarm Replenish', status: 'Maintenance' },
+    { time: '22:30:45', event: 'Harar: Ground Moisture Alert', status: 'Warning' },
 ];
 
 // Import into DB
 const importData = async () => {
     try {
-        await Artifact.deleteMany();
+        await HeritageSite.deleteMany();
         await Metric.deleteMany();
-        await Prediction.deleteMany();
+        await Log.deleteMany();
 
-        await Artifact.create(artifacts);
+        await HeritageSite.create(sites);
         await Metric.create(metrics);
+        await Log.create(logs);
 
-        console.log('🏛️ Data Records Imported...');
+        console.log('🏛️ Ethiopia Heritage Data Imported...');
         process.exit();
     } catch (err) {
         console.error(err);
@@ -103,9 +109,9 @@ const importData = async () => {
 // Delete data
 const deleteData = async () => {
     try {
-        await Artifact.deleteMany();
+        await HeritageSite.deleteMany();
         await Metric.deleteMany();
-        await Prediction.deleteMany();
+        await Log.deleteMany();
 
         console.log('🧹 Data Records Wiped...');
         process.exit();

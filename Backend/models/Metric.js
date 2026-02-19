@@ -4,9 +4,9 @@ const MetricSchema = new mongoose.Schema({
     type: {
         type: String,
         required: true,
-        enum: ['city_stat', 'global_trend'],
+        enum: ['climate_risk', 'urbanization_impact', 'tourism_pressure', 'preservation_progress'],
     },
-    name: {
+    label: {
         type: String,
         required: true,
     },
@@ -16,9 +16,7 @@ const MetricSchema = new mongoose.Schema({
     },
     year: {
         type: Number,
-        required: true,
     },
-    category: String,
     updatedAt: {
         type: Date,
         default: Date.now,
