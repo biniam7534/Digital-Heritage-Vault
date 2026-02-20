@@ -25,6 +25,15 @@ const heritageSiteSchema = new mongoose.Schema({
     history: {
         type: String,
     },
+    historicalData: [{
+        year: Number,
+        integrity: Number, // 0-100%
+        threatLevel: String
+    }],
+    riskFactors: [{
+        factor: String,
+        severity: String // High, Medium, Low
+    }],
     future2050: {
         preservation: {
             type: String,

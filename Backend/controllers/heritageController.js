@@ -37,3 +37,39 @@ exports.getLogs = async (req, res, next) => {
         res.status(400).json({ success: false });
     }
 };
+
+// @desc    Get prediction for a specific site
+// @route   GET /api/v1/heritage/sites/:id/predict
+// @access  Public
+exports.getSitePrediction = async (req, res, next) => {
+    try {
+        const site = await HeritageSite.findById(req.params.id);
+        if (!site) return res.status(404).json({ success: false, error: 'Site not found' });
+
+        // Simple linear regression simulation based on last 2 points
+        const history = site.historicalData.sort((a, b) => a.year - b.year);
+        const p1 = history[history.length - 2];
+        const p2 = history[history.length - 1];
+
+        const slope = (p2.integrity - p1.integrity) / (p2.year - p1.year);
+
+        const projection = [];
+        for (let year = 2025; year <= 2050; year += 5) {
+            const projectedIntegrity = Math.max(0, p2.integrity + slope * (year - p2.year));
+            projection.push({ year, integrity: Math.round(projectedIntegrity) });
+        }
+
+        res.status(200).json({
+            success: true,
+            data: {
+                siteId: site._id,
+                siteName: site.name,
+                historicalTrend: history,
+                futureProjection: projection,
+                riskFactors: site.riskFactors
+            }
+        });
+    } catch (err) {
+        res.status(400).json({ success: false, error: err.message });
+    }
+};

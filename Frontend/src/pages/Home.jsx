@@ -1,11 +1,43 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Hero from '../components/Hero';
+import Predictor from '../components/Predictor';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
     Shield, Globe, Clock, Zap, AlertTriangle, TrendingDown,
     MapPin, Info, ChevronRight, Activity, Wind, CloudRain, Vault, X
 } from 'lucide-react';
 import { ethiopianSites } from '../data/ethiopianSites';
+
+const RiskFactor = ({ label, value, icon, color }) => (
+    <div className="glass-card p-6 border-white/5">
+        <div className="flex justify-between items-center mb-4">
+            <div className="flex items-center gap-3">
+                {icon}
+                <span className="font-future text-[10px] tracking-widest uppercase text-gray-400">{label}</span>
+            </div>
+            <span className="font-future text-xs text-white">{value}%</span>
+        </div>
+        <div className="w-full h-1 bg-white/5 rounded-full overflow-hidden">
+            <motion.div
+                initial={{ width: 0 }}
+                whileInView={{ width: `${value}%` }}
+                transition={{ duration: 1 }}
+                className={`h-full bg-current ${color === 'blue' ? 'text-blue-500' : color === 'amber' ? 'text-amber-500' : 'text-red-500'}`}
+                style={{ backgroundColor: 'currentColor' }}
+            />
+        </div>
+    </div>
+);
+
+const LogEntry = ({ time, event, status }) => (
+    <div className="flex gap-4 items-start group">
+        <div className="font-future text-[9px] text-gray-600 pt-1">{time}</div>
+        <div className="flex-1">
+            <div className="text-xs font-sans text-gray-300 group-hover:text-heritage-gold transition-colors">{event}</div>
+            <div className="text-[8px] font-future uppercase tracking-widest text-gray-600 mt-1">{status}</div>
+        </div>
+    </div>
+);
 
 const Home = () => {
     const [selectedSite, setSelectedSite] = useState(null);
@@ -23,6 +55,29 @@ const Home = () => {
     const removeFromVault = (id) => {
         setVault(vault.filter(item => item.id !== id));
     };
+
+    const [metrics, setMetrics] = useState([]);
+    const [logsData, setLogsData] = useState([]);
+
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                const [metricsRes, logsRes] = await Promise.all([
+                    fetch('http://localhost:5000/api/v1/heritage/metrics'),
+                    fetch('http://localhost:5000/api/v1/heritage/logs')
+                ]);
+                const metricsJson = await metricsRes.json();
+                const logsJson = await logsRes.json();
+                if (metricsJson.success) setMetrics(metricsJson.data);
+                if (logsJson.success) setLogsData(logsJson.data);
+            } catch (err) {
+                console.error("Dashboard sync failed:", err);
+            }
+        };
+        fetchData();
+    }, []);
+
+    const getMetricValue = (type) => metrics.find(m => m.type === type)?.value || 0;
 
     return (
         <div className="bg-heritage-navy min-h-screen text-gray-200 font-sans overflow-x-hidden">
@@ -119,6 +174,8 @@ const Home = () => {
                     </div>
                 </div>
             </section>
+
+            <Predictor />
 
             {/* 3. Detail & 2050 Future Projection */}
             <AnimatePresence>
@@ -274,43 +331,52 @@ const Home = () => {
                     <div className="grid md:grid-cols-3 gap-8">
                         {/* Column 1: Indicators */}
                         <div className="space-y-8">
-                            <RiskFactor label="Climate Risk Level" value={68} icon={<CloudRain className="text-blue-400" />} color="blue" />
-                            <RiskFactor label="Urbanization Impact" value={42} icon={<AlertTriangle className="text-amber-400" />} color="amber" />
-                            <RiskFactor label="Tourism Pressure" value={89} icon={<Activity className="text-red-400" />} color="red" />
+                            <RiskFactor label="Climate Risk Level" value={getMetricValue('climate_risk')} icon={<CloudRain className="text-blue-400" />} color="blue" />
+                            <RiskFactor label="Urbanization Impact" value={getMetricValue('urbanization_impact')} icon={<AlertTriangle className="text-amber-400" />} color="amber" />
+                            <RiskFactor label="Tourism Pressure" value={getMetricValue('tourism_pressure')} icon={<Activity className="text-red-400" />} color="red" />
                         </div>
 
-                        {/* Column 2: Chart (CSS Animation) */}
-                        <div className="glass-card p-10 flex flex-col justify-between min-h-[400px]">
+                        {/* Column 2: Chart (Dynamic Progress) */}
+                        <div className="glass-card p-10 flex flex-col min-h-[400px]">
                             <h4 className="font-future text-xs tracking-widest uppercase mb-10">Digital Preservation Progress</h4>
-                            <div className="flex-1 flex items-end gap-4 h-full">
-                                {[35, 48, 62, 58, 75, 82, 94].map((h, i) => (
-                                    <div key={i} className="flex-1 flex flex-col items-center gap-4 group">
-                                        <motion.div
-                                            initial={{ height: 0 }}
-                                            whileInView={{ height: `${h}%` }}
-                                            transition={{ duration: 1.5, delay: i * 0.1 }}
-                                            className="w-full bg-heritage-gold/20 group-hover:bg-heritage-gold/40 border-t-2 border-heritage-gold transition-all relative"
-                                        >
-                                            <div className="absolute -top-8 left-1/2 -translate-x-1/2 text-[10px] font-future opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">{h}%</div>
-                                        </motion.div>
-                                        <span className="font-future text-[8px] tracking-tighter text-gray-500 uppercase">{2018 + i}</span>
+                            <div className="flex-1 flex items-end gap-2 md:gap-4 pb-2">
+                                {metrics.filter(m => m.type === 'preservation_progress').sort((a, b) => a.year - b.year).map((m, i) => (
+                                    <div key={i} className="flex-1 flex flex-col items-center gap-4 group h-full justify-end">
+                                        <div className="relative w-full flex flex-col justify-end h-full">
+                                            <motion.div
+                                                initial={{ height: 0 }}
+                                                whileInView={{ height: `${m.value}%` }}
+                                                viewport={{ once: true }}
+                                                transition={{ duration: 1.5, delay: i * 0.1, ease: "easeOut" }}
+                                                className="w-full bg-heritage-gold/30 hover:bg-heritage-gold/50 border-t-2 border-heritage-gold transition-colors relative"
+                                            >
+                                                <div className="absolute -top-8 left-1/2 -translate-x-1/2 text-[10px] font-future opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap text-heritage-gold">{m.value}%</div>
+                                            </motion.div>
+                                        </div>
+                                        <span className="font-future text-[8px] tracking-tighter text-gray-500 uppercase">{m.year}</span>
                                     </div>
                                 ))}
                             </div>
-                            <div className="mt-10 flex items-center gap-4 text-xs font-future text-heritage-gold/60">
-                                <TrendingDown size={14} />
+                            <div className="mt-6 flex items-center gap-4 text-xs font-future text-heritage-gold/60">
+                                <TrendingDown size={14} className="rotate-180 text-green-500" />
                                 <span>+12.4% Integrity Growth YoY</span>
                             </div>
                         </div>
 
-                        {/* Column 3: Live Feed */}
-                        <div className="glass-card p-8 space-y-8">
-                            <h4 className="font-future text-xs tracking-widest uppercase border-b border-white/10 pb-4">Live preservation Logs</h4>
+                        {/* Column 3: Event Stream */}
+                        <div className="glass-card p-10 bg-white/5 border border-white/10">
+                            <h4 className="font-future text-xs tracking-widest uppercase mb-10 border-b border-white/5 pb-4 flex justify-between items-center">
+                                Preservation Logs
+                                <div className="flex gap-1">
+                                    <div className="w-1 h-1 bg-red-500 rounded-full animate-pulse" />
+                                    <div className="w-1 h-1 bg-green-500 rounded-full animate-pulse" />
+                                </div>
+                            </h4>
                             <div className="space-y-6">
-                                <LogEntry time="02:14:55" event="Lalibela: Structural Scan Complete" status="Verified" />
-                                <LogEntry time="01:45:12" event="Axum: Atmospheric Adjust Opt" status="Active" />
-                                <LogEntry time="23:12:08" event="Fasil: Drone Swarm Replenish" status="Maintenance" />
-                                <LogEntry time="22:30:45" event="Harar: Ground Moisture Alert" status="Warning" />
+                                {logsData.map((log, idx) => (
+                                    <LogEntry key={idx} time={log.time} event={log.event} status={log.status} />
+                                ))}
+                                {logsData.length === 0 && <p className="text-[10px] font-future text-gray-600 uppercase tracking-widest">Awaiting sensor data...</p>}
                             </div>
                             <button className="w-full py-4 border border-heritage-gold/20 font-future text-[10px] tracking-widest uppercase hover:bg-heritage-gold/10 transition-all">
                                 Open Sentinel Terminal
@@ -428,36 +494,4 @@ const Home = () => {
     );
 };
 
-const RiskFactor = ({ label, value, icon, color }) => (
-    <div className="glass-card p-6 border-white/5">
-        <div className="flex justify-between items-center mb-4">
-            <div className="flex items-center gap-3">
-                {icon}
-                <span className="font-future text-[10px] tracking-widest uppercase text-gray-400">{label}</span>
-            </div>
-            <span className="font-future text-xs text-white">{value}%</span>
-        </div>
-        <div className="w-full h-1 bg-white/5 rounded-full overflow-hidden">
-            <motion.div
-                initial={{ width: 0 }}
-                whileInView={{ width: `${value}%` }}
-                transition={{ duration: 1 }}
-                className={`h-full bg-current ${color === 'blue' ? 'text-blue-500' : color === 'amber' ? 'text-amber-500' : 'text-red-500'}`}
-                style={{ backgroundColor: 'currentColor' }}
-            />
-        </div>
-    </div>
-);
-
-const LogEntry = ({ time, event, status }) => (
-    <div className="flex gap-4 items-start group">
-        <div className="font-future text-[9px] text-gray-600 pt-1">{time}</div>
-        <div className="flex-1">
-            <div className="text-xs font-sans text-gray-300 group-hover:text-heritage-gold transition-colors">{event}</div>
-            <div className="text-[8px] font-future uppercase tracking-widest text-gray-600 mt-1">{status}</div>
-        </div>
-    </div>
-);
-
 export default Home;
-
