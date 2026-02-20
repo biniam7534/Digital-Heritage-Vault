@@ -3,13 +3,26 @@ import Hero from '../components/Hero';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
     Shield, Globe, Clock, Zap, AlertTriangle, TrendingDown,
-    MapPin, Info, ChevronRight, Activity, Wind, CloudRain
+    MapPin, Info, ChevronRight, Activity, Wind, CloudRain, Vault, X
 } from 'lucide-react';
 import { ethiopianSites } from '../data/ethiopianSites';
 
 const Home = () => {
     const [selectedSite, setSelectedSite] = useState(null);
     const [viewMode, setViewMode] = useState('present'); // 'present' or 'future'
+    const [vault, setVault] = useState([]);
+    const [isVaultOpen, setIsVaultOpen] = useState(false);
+
+    const addToVault = (site) => {
+        if (!vault.find(item => item.id === site.id)) {
+            setVault([...vault, site]);
+        }
+        setIsVaultOpen(true);
+    };
+
+    const removeFromVault = (id) => {
+        setVault(vault.filter(item => item.id !== id));
+    };
 
     return (
         <div className="bg-heritage-navy min-h-screen text-gray-200 font-sans overflow-x-hidden">
@@ -91,6 +104,12 @@ const Home = () => {
                                                 className="flex items-center gap-2 text-[10px] uppercase tracking-[0.2em] font-future text-heritage-gold hover:gap-4 transition-all"
                                             >
                                                 See in 2050 <Zap size={10} />
+                                            </button>
+                                            <button
+                                                onClick={(e) => { e.stopPropagation(); addToVault(site); }}
+                                                className="mt-2 w-full py-2 bg-heritage-gold/10 border border-heritage-gold/30 text-heritage-gold font-future text-[8px] uppercase tracking-widest hover:bg-heritage-gold hover:text-heritage-navy transition-all flex items-center justify-center gap-2"
+                                            >
+                                                <Vault size={10} /> Add to Vault
                                             </button>
                                         </div>
                                     </div>
@@ -317,6 +336,93 @@ const Home = () => {
                     </button>
                 </div>
             </section>
+
+            {/* Vault Sidebar (Cart) */}
+            <AnimatePresence>
+                {isVaultOpen && (
+                    <>
+                        <motion.div
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            exit={{ opacity: 0 }}
+                            onClick={() => setIsVaultOpen(false)}
+                            className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50"
+                        />
+                        <motion.div
+                            initial={{ x: '100%' }}
+                            animate={{ x: 0 }}
+                            exit={{ x: '100%' }}
+                            transition={{ type: 'spring', damping: 25, stiffness: 200 }}
+                            className="fixed top-0 right-0 w-full md:w-[400px] h-full bg-heritage-navy border-l border-heritage-gold/20 shadow-2xl z-50 flex flex-col"
+                        >
+                            <div className="p-8 border-b border-heritage-gold/10 flex justify-between items-center">
+                                <div className="flex items-center gap-4">
+                                    <Shield className="text-heritage-gold" />
+                                    <div>
+                                        <h3 className="text-xl font-display font-bold text-white uppercase leading-tight">Digital Vault</h3>
+                                        <p className="text-[10px] font-future tracking-widest text-heritage-gold/60 uppercase">Archived Preservations</p>
+                                    </div>
+                                </div>
+                                <button onClick={() => setIsVaultOpen(false)} className="text-gray-500 hover:text-white transition-colors">
+                                    <X size={24} />
+                                </button>
+                            </div>
+
+                            <div className="flex-1 overflow-y-auto p-8 space-y-6">
+                                {vault.length === 0 ? (
+                                    <div className="h-40 flex flex-col items-center justify-center text-center opacity-30 grayscale">
+                                        <Clock size={40} className="mb-4" />
+                                        <p className="font-future text-[10px] uppercase tracking-widest">Your vault is empty</p>
+                                    </div>
+                                ) : (
+                                    vault.map(item => (
+                                        <div key={item.id} className="flex gap-4 group">
+                                            <div className="w-20 h-20 bg-white/5 rounded-sm overflow-hidden shrink-0 border border-white/10">
+                                                <img src={item.image} alt={item.name} className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all" />
+                                            </div>
+                                            <div className="flex-1 flex flex-col justify-center">
+                                                <h4 className="text-sm font-display font-bold text-white mb-1 uppercase">{item.name}</h4>
+                                                <p className="text-[8px] font-future text-heritage-gold/60 uppercase tracking-widest">{item.location.split(',')[0]}</p>
+                                                <button
+                                                    onClick={() => removeFromVault(item.id)}
+                                                    className="mt-2 text-[8px] font-future text-red-500/50 hover:text-red-500 uppercase tracking-widest w-fit"
+                                                >
+                                                    Remove from archive
+                                                </button>
+                                            </div>
+                                        </div>
+                                    ))
+                                )}
+                            </div>
+
+                            <div className="p-8 border-t border-heritage-gold/10 bg-white/5">
+                                <div className="flex justify-between items-center mb-6">
+                                    <span className="text-[10px] font-future text-gray-500 uppercase tracking-widest">Total Items</span>
+                                    <span className="text-xl font-display font-bold text-heritage-gold">{vault.length}</span>
+                                </div>
+                                <button className="w-full py-5 bg-heritage-gold text-heritage-navy font-future font-bold text-xs uppercase tracking-[0.3em] hover:brightness-110 shadow-lg shadow-heritage-gold/20 transition-all">
+                                    Process Archival Download
+                                </button>
+                            </div>
+                        </motion.div>
+                    </>
+                )}
+            </AnimatePresence>
+
+            {/* Floating Vault Trigger */}
+            <motion.button
+                whileHover={{ scale: 1.1 }}
+                whileTap={{ scale: 0.9 }}
+                onClick={() => setIsVaultOpen(true)}
+                className="fixed bottom-10 right-10 w-16 h-16 bg-heritage-gold text-heritage-navy rounded-full flex items-center justify-center shadow-2xl z-40 group"
+            >
+                <Shield className="group-hover:rotate-12 transition-transform" />
+                {vault.length > 0 && (
+                    <span className="absolute -top-2 -right-2 w-6 h-6 bg-white text-heritage-navy text-[10px] font-bold rounded-full flex items-center justify-center border-2 border-heritage-navy">
+                        {vault.length}
+                    </span>
+                )}
+            </motion.button>
 
         </div>
     );

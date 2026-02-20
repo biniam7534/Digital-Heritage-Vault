@@ -65,6 +65,110 @@ const sites = [
             impact: 'Smart drainage networks prevent water damage from rising groundwater levels.',
             tourism: 'Digital twins of the entire city enable global researchers to study Harari architecture remotely.',
         }
+    },
+    {
+        name: 'Debre Damo',
+        location: 'Tigray Region, Ethiopia',
+        description: 'A 6th-century monastery accessible only by climbing a 15-meter rope up a sheer cliff.',
+        image: 'https://images.unsplash.com/photo-1545620853-294708703310?auto=format&fit=crop&q=80&w=800', // Update with real URL if needed
+        unescoStatus: 'National Heritage',
+        history: 'One of the oldest Christian monasteries in Ethiopia, founded by Abuna Aregawi.',
+        future2050: {
+            preservation: 'Nanofiber ascent cables and localized structural reinforcement safeguard the ancient cliffside dwellings.',
+            impact: 'Digital preservation of ancient parchment manuscripts via high-fidelity molecular scanning.',
+            tourism: 'Magnetically stabilized visitor platforms allow safe access to the summit.',
+        }
+    },
+    {
+        name: 'Erta Ale',
+        location: 'Afar Region, Ethiopia',
+        description: 'A continuously active basaltic shield volcano in the Danakil Depression, containing a lava lake.',
+        image: 'https://images.unsplash.com/photo-1545569341-9eb8b30979d9?auto=format&fit=crop&q=80&w=800', // Update with real URL if needed
+        unescoStatus: 'Geological Wonder',
+        history: 'Known as the "Gateway to Hell" by locals, it features one of the few permanent lava lakes in the world.',
+        future2050: {
+            preservation: 'Thermal energy harvesters dissipate excess heat to protect nearby research outposts.',
+            impact: 'Real-time seismic prediction AI monitors tectonic shifts with millimetric precision.',
+            tourism: 'Hover-shuttles with thermal shielding provide close-proximity views.',
+        }
+    },
+    {
+        name: 'Konso Cultural Landscape',
+        location: 'Southern Region, Ethiopia',
+        description: 'A 55-square-kilometer arid property featuring stone-walled terraces and fortified settlements.',
+        image: 'https://images.unsplash.com/photo-1545620853-93d3b769ea87?auto=format&fit=crop&q=80&w=800', // Update with real URL if needed
+        unescoStatus: 'Inscribed in 2011',
+        history: 'The Konso people have lived in these fortified highland towns for over 400 years.',
+        future2050: {
+            preservation: 'Bio-synthetic terrace fillers prevent erosion while maintaining traditional farming aesthetics.',
+            impact: 'Smart irrigation networks utilize atmospheric water generators to sustain the landscape.',
+            tourism: 'Augmented reality paths show the 400-year evolution of the community.',
+        }
+    },
+    {
+        name: 'Yeha Temple',
+        location: 'Tigray Region, Ethiopia',
+        description: 'The oldest standing structure in Ethiopia, a Great Temple built of massive limestone blocks.',
+        image: 'https://images.unsplash.com/photo-1596464716127-f2a82984de30?auto=format&fit=crop&q=80&w=800',
+        unescoStatus: 'National Heritage',
+        history: 'Capital of the pre-Aksumite Kingdom of D\'mt, symbolizing deep architectural roots.',
+        future2050: {
+            preservation: 'Electromagnetic field stabilizers protect blocks from seismic vibration.',
+            impact: 'Neural-archaeology reconstructs the lost city from subterranean echoes.',
+            tourism: 'Time-dilated VR experiences allow visitors to witness ancient processions.',
+        }
+    },
+    {
+        name: 'Simien Mountains',
+        location: 'Amhara Region, Ethiopia',
+        description: 'Massive erosion over the years has created one of the most spectacular landscapes in the world.',
+        image: 'https://images.unsplash.com/photo-1545620853-93d3b769ea87?auto=format&fit=crop&q=80&w=800',
+        unescoStatus: 'Inscribed in 1978',
+        history: 'Home to the Walia ibex, Gelada baboon, and the Ethiopian wolf.',
+        future2050: {
+            preservation: 'Climate-controlled biome barriers will protect endangered species.',
+            impact: 'Eco-stabilizer clusters prevent soil erosion in high-traffic zones.',
+            tourism: 'Anti-gravity observation decks provide 360-degree views.',
+        }
+    },
+    {
+        name: 'Tiya',
+        location: 'Southern Region, Ethiopia',
+        description: 'An archaeological site containing 36 monuments, including 32 carved stelae.',
+        image: 'https://images.unsplash.com/photo-1596464716127-f2a82984de30?auto=format&fit=crop&q=80&w=800',
+        unescoStatus: 'Inscribed in 1980',
+        history: 'These stelae were erected between the 12th and 14th centuries.',
+        future2050: {
+            preservation: 'Subsurface molecular bonding will prevent sinking.',
+            impact: 'Digital decryption reveals hidden historical records.',
+            tourism: 'Holographic reconstruction of the original funerary sites.',
+        }
+    },
+    {
+        name: 'Wanchi Crater Lake',
+        location: 'Oromia Region, Ethiopia',
+        description: 'A beautiful crater lake situated at an altitude of 3,380 meters above sea level.',
+        image: 'https://images.unsplash.com/photo-1545620853-294708703310?auto=format&fit=crop&q=80&w=800',
+        unescoStatus: 'Natural Heritage',
+        history: 'A dormant volcano whose caldera has become a pristine lake sanctuary.',
+        future2050: {
+            preservation: 'Water purity sensors and automated algae control maintain the ecosystem.',
+            impact: 'Smart aquaculture ensures sustainable food sources.',
+            tourism: 'Electric submersible vehicles provide eco-friendly exploration.',
+        }
+    },
+    {
+        name: 'Sof Omer Cave',
+        location: 'Bale, Ethiopia',
+        description: 'One of the longest cave systems in Africa, carved by the Weib River.',
+        image: 'https://images.unsplash.com/photo-1545569341-9eb8b30979d9?auto=format&fit=crop&q=80&w=800',
+        unescoStatus: 'National Heritage',
+        history: 'A sacred site featuring massive limestone pillars and underground passages.',
+        future2050: {
+            preservation: 'Bioluminescent fungal strains light the passages while maintaining climate.',
+            impact: 'Advanced sonar mapping devices monitor structural shifts.',
+            tourism: 'Levitating tour platforms allow navigation without touching formations.',
+        }
     }
 ];
 
