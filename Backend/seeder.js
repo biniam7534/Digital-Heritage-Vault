@@ -107,6 +107,176 @@ const sites = [
             impact: 'Smart drainage networks prevent water damage from rising groundwater levels.',
             tourism: 'Digital twins enabled Global researchers to study Harari architecture remotely.',
         }
+    },
+    {
+        name: 'Fasil Ghebbi',
+        location: 'Gondar, Amhara Region',
+        description: 'The fortress-city known as the "Camelot of Africa," featuring castles and palaces of the 16th and 17th centuries.',
+        image: 'https://images.unsplash.com/photo-1596464716127-f2a82984de30?auto=format&fit=crop&q=80&w=800',
+        unescoStatus: 'World Heritage since 1979',
+        history: 'Founded by Emperor Fasilides, it served as the residence of Ethiopian emperors for over 200 years.',
+        historicalData: [
+            { year: 1979, integrity: 95, threatLevel: 'Low' },
+            { year: 2010, integrity: 88, threatLevel: 'Medium' },
+            { year: 2024, integrity: 82, threatLevel: 'Medium' }
+        ],
+        riskFactors: [
+            { factor: 'Structural Decay', severity: 'Medium' },
+            { factor: 'Vegetation Growth', severity: 'Medium' },
+            { factor: 'Urban Pressure', severity: 'Low' }
+        ],
+        future2050: {
+            preservation: 'Nano-structural stabilization will reinforce the stone masonry without altering the historical aesthetics.',
+            impact: 'Passive cooling systems and moisture controls protect the internal wall paintings from decay.',
+            tourism: 'Augmented reality "Ghost Windows" show the daily life of the royal court in the 17th century.',
+        }
+    },
+    {
+        name: 'Tiya Stelae',
+        location: 'Central Ethiopia',
+        description: 'An archaeological site containing 36 monuments, including 32 carved stelae with mysterious symbols.',
+        image: 'https://images.unsplash.com/photo-1545620853-93d3b769ea87?auto=format&fit=crop&q=80&w=800',
+        unescoStatus: 'World Heritage since 1980',
+        history: 'The stelae mark a prehistoric burial complex, representing an ancient Ethiopian culture whose origin is still debated.',
+        historicalData: [
+            { year: 1980, integrity: 98, threatLevel: 'Low' },
+            { year: 2024, integrity: 92, threatLevel: 'Low' }
+        ],
+        riskFactors: [
+            { factor: 'Weathering', severity: 'Medium' },
+            { factor: 'Lichen Growth', severity: 'Low' }
+        ],
+        future2050: {
+            preservation: 'Molecular bonding agents prevent further weathering of the soft stone engravings.',
+            impact: 'Deep-ground stabilization protects the stelae from soil shifting during extreme rainy seasons.',
+            tourism: 'LiDAR-assisted 3D projections reveal the hidden engravings that have faded over millennia.',
+        }
+    },
+    {
+        name: 'Konso Landscape',
+        location: 'Southern Ethiopia',
+        description: 'A spectacular cultural landscape featuring massive stone-walled terraces and fortified settlements.',
+        image: 'https://images.unsplash.com/photo-1545620853-294708703310?auto=format&fit=crop&q=80&w=800',
+        unescoStatus: 'World Heritage since 2011',
+        history: 'A living tradition representing the Konso people\'s adaptation to a dry, hostile environment over 400 years.',
+        historicalData: [
+            { year: 2011, integrity: 94, threatLevel: 'Low' },
+            { year: 2024, integrity: 88, threatLevel: 'Medium' }
+        ],
+        riskFactors: [
+            { factor: 'Soil Erosion', severity: 'High' },
+            { factor: 'Social Change', severity: 'Medium' }
+        ],
+        future2050: {
+            preservation: 'AI-driven irrigation management maintains the terrace integrity through precise water distribution.',
+            impact: 'Biodegradable geo-textiles prevent soil erosion while supporting the traditional stone walls.',
+            tourism: 'Virtual eco-trails allow visitors to experience Konso agricultural traditions without disrupting the community.',
+        }
+    },
+    {
+        name: 'Debre Damo',
+        location: 'Tigray Region, Ethiopia',
+        description: 'A 6th-century monastery built on a flat-top mountain, accessible only by climbing a 15-meter rope.',
+        image: 'https://images.unsplash.com/photo-1545620853-93d3b769ea87?auto=format&fit=crop&q=80&w=800',
+        unescoStatus: 'Historical Cultural Site',
+        history: 'One of the oldest monasteries in Ethiopia, featuring a unique Aksumite architectural style.',
+        historicalData: [
+            { year: 1990, integrity: 98, threatLevel: 'Low' },
+            { year: 2024, integrity: 90, threatLevel: 'Medium' }
+        ],
+        riskFactors: [
+            { factor: 'Accessibility Damage', severity: 'Low' },
+            { factor: 'Erosion', severity: 'Medium' }
+        ],
+        future2050: {
+            preservation: 'Micro-climate control inside the stone church preserves ancient parchment manuscripts.',
+            impact: 'Invisible solar-powered rope lifts provide safer access for conservation teams.',
+            tourism: 'Remote drone-captured VR tours allow those unable to climb to experience the summit architecture.',
+        }
+    },
+    {
+        name: 'Erta Ale',
+        location: 'Afar Region, Ethiopia',
+        description: 'A continuously active shield volcano in the Danakil Depression, featuring a persistent lava lake.',
+        image: 'https://images.unsplash.com/photo-1545569341-9eb8b30979d9?auto=format&fit=crop&q=80&w=800',
+        unescoStatus: 'Natural Heritage Site',
+        history: 'Known as the "Smoking Mountain" by the Afar people, it is one of the most unique geological sites on Earth.',
+        historicalData: [
+            { year: 2000, integrity: 100, threatLevel: 'Low' },
+            { year: 2024, integrity: 95, threatLevel: 'Low' }
+        ],
+        riskFactors: [
+            { factor: 'Lava Overflow', severity: 'High' },
+            { factor: 'Toxic Gas Release', severity: 'Medium' }
+        ],
+        future2050: {
+            preservation: 'Thermal energía harvesting from the volcano powers local geothermal conservation hubs.',
+            impact: 'Real-time seismic and volcanic flow sensors provide 100% accurate prediction of activity.',
+            tourism: 'Anti-heat shielding allows eco-tourists to view the lava lake from safe, air-conditioned pods.',
+        }
+    },
+    {
+        name: 'Temple of Yeha',
+        location: 'Tigray Region, Ethiopia',
+        description: 'The oldest standing structure in Ethiopia, dating back to at least the 7th century BC.',
+        image: 'https://images.unsplash.com/photo-1596464716127-f2a82984de30?auto=format&fit=crop&q=80&w=800',
+        unescoStatus: 'Archaeological Heritage',
+        history: 'A grand temple of the D\'mt kingdom, predating the Aksumite Empire by several centuries.',
+        historicalData: [
+            { year: 1900, integrity: 85, threatLevel: 'Medium' },
+            { year: 2024, integrity: 92, threatLevel: 'Low' } // Successful restoration
+        ],
+        riskFactors: [
+            { factor: 'Oxidation', severity: 'Medium' },
+            { factor: 'Structural Vibrations', severity: 'Low' }
+        ],
+        future2050: {
+            preservation: 'Chemical vapor deposition creates an invisible shield against acid rain and oxidation.',
+            impact: 'Precision laser-reconstruction fills in structural gaps with material indistinguishable from the original stone.',
+            tourism: 'Interactive sand-projections recreate the ancient city of Yeha during its peak.',
+        }
+    },
+    {
+        name: 'Wanchi Crater Lake',
+        location: 'Oromia Region, Ethiopia',
+        description: 'A breathtaking crater lake at 3,380m altitude, with an island monastery and lush greenery.',
+        image: 'https://images.unsplash.com/photo-1545620853-294708703310?auto=format&fit=crop&q=80&w=800',
+        unescoStatus: 'Natural & Cultural Site',
+        history: 'An extinct volcanic crater that has become a center of nature and spirituality for centuries.',
+        historicalData: [
+            { year: 1950, integrity: 98, threatLevel: 'Low' },
+            { year: 2024, integrity: 96, threatLevel: 'Low' }
+        ],
+        riskFactors: [
+            { factor: 'Water Pollution', severity: 'Medium' },
+            { factor: 'Deforestation', severity: 'Medium' }
+        ],
+        future2050: {
+            preservation: 'Smart-water sensors maintain the pH balance of the lake to protect endemic aquatic life.',
+            impact: 'Carbon-negative transport systems and zip-lines replace traditional high-impact trails.',
+            tourism: 'Underwater glass tunnels provide a view into the volcanic origins of the lake.',
+        }
+    },
+    {
+        name: 'Sof Omer Caves',
+        location: 'Bale, Oromia Region',
+        description: 'One of the longest and most spectacular cave systems in Africa, carved by the Web River.',
+        image: 'https://images.unsplash.com/photo-1545620853-93d3b769ea87?auto=format&fit=crop&q=80&w=800',
+        unescoStatus: 'Natural Heritage',
+        history: 'A sacred site for both nature lovers and religious pilgrims, formed over millions of years.',
+        historicalData: [
+            { year: 2000, integrity: 94, threatLevel: 'Low' },
+            { year: 2024, integrity: 88, threatLevel: 'Medium' }
+        ],
+        riskFactors: [
+            { factor: 'Siltation', severity: 'High' },
+            { factor: 'Unregulated Tourism', severity: 'Medium' }
+        ],
+        future2050: {
+            preservation: 'Bio-luminescent fungi are used for low-impact, natural lighting along tourist paths.',
+            impact: 'Flood-diversion AI protects the limestone formations from excessive river surges.',
+            tourism: 'Sonic-mapping guides provide a surround-sound historical narration of the cave\'s formation.',
+        }
     }
 ];
 
