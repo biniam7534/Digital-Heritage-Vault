@@ -59,13 +59,13 @@ const Home = () => {
                         </div>
                     </div>
 
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+                    <div className="flex overflow-x-auto pb-12 gap-8 snap-x snap-mandatory scrollbar-hide no-scrollbar">
                         {ethiopianSites.map((site) => (
                             <motion.div
                                 key={site.id}
                                 whileHover={{ y: -10 }}
                                 onClick={() => setSelectedSite(site)}
-                                className="glass-card group cursor-pointer overflow-hidden border border-white/5 hover:border-heritage-gold/50 transition-all duration-500"
+                                className="flex-none w-[300px] md:w-[380px] snap-center glass-card group cursor-pointer overflow-hidden border border-white/5 hover:border-heritage-gold/50 transition-all duration-500"
                             >
                                 <div className="aspect-[4/5] relative overflow-hidden">
                                     <img
