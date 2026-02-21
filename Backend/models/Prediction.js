@@ -1,22 +1,18 @@
 const mongoose = require('mongoose');
 
 const PredictionSchema = new mongoose.Schema({
-    skillLevel: {
-        type: Number,
-        required: true,
+    siteId: {
+        type: mongoose.Schema.ObjectId,
+        ref: 'HeritageSite',
+        required: true
     },
-    field: {
-        type: String,
-        required: true,
-    },
-    hours: {
-        type: Number,
-        required: true,
-    },
-    careerTitle: String,
-    projection: Array,
-    roadmap: Array,
-    createdAt: {
+    siteName: String,
+    projection: [{
+        year: Number,
+        integrity: Number
+    }],
+    riskFactors: Array,
+    savedAt: {
         type: Date,
         default: Date.now,
     },

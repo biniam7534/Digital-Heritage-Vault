@@ -1,6 +1,7 @@
 const HeritageSite = require('../models/HeritageSite');
 const Metric = require('../models/Metric');
 const Log = require('../models/Log');
+const Prediction = require('../models/Prediction');
 
 // @desc    Get all heritage sites
 // @route   GET /api/v1/heritage/sites
@@ -69,6 +70,30 @@ exports.getSitePrediction = async (req, res, next) => {
                 riskFactors: site.riskFactors
             }
         });
+    } catch (err) {
+        res.status(400).json({ success: false, error: err.message });
+    }
+};
+
+// @desc    Save a prediction
+// @route   POST /api/v1/heritage/predictions
+// @access  Public
+exports.savePrediction = async (req, res, next) => {
+    try {
+        const prediction = await Prediction.create(req.body);
+        res.status(201).json({ success: true, data: prediction });
+    } catch (err) {
+        res.status(400).json({ success: false, error: err.message });
+    }
+};
+
+// @desc    Get all saved predictions
+// @route   GET /api/v1/heritage/predictions
+// @access  Public
+exports.getSavedPredictions = async (req, res, next) => {
+    try {
+        const predictions = await Prediction.find().sort('-savedAt');
+        res.status(200).json({ success: true, count: predictions.length, data: predictions });
     } catch (err) {
         res.status(400).json({ success: false, error: err.message });
     }
