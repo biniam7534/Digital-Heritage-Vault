@@ -4,7 +4,7 @@ import Predictor from '../components/Predictor';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
     Shield, Globe, Clock, Zap, AlertTriangle, TrendingDown,
-    MapPin, Info, ChevronRight, Activity, Wind, CloudRain, Vault, X
+    MapPin, Info, ChevronRight, Activity, Wind, CloudRain, Vault, X, Terminal
 } from 'lucide-react';
 import { ethiopianSites } from '../data/ethiopianSites';
 
@@ -29,13 +29,14 @@ const RiskFactor = ({ label, value, icon, color }) => (
     </div>
 );
 
-const LogEntry = ({ time, event, status }) => (
-    <div className="flex gap-4 items-start group">
+const LogEntry = ({ time, event, status, onClick }) => (
+    <div className="flex gap-4 items-start group cursor-pointer" onClick={onClick}>
         <div className="font-future text-[9px] text-gray-600 pt-1">{time}</div>
         <div className="flex-1">
             <div className="text-xs font-sans text-gray-300 group-hover:text-heritage-gold transition-colors">{event}</div>
             <div className="text-[8px] font-future uppercase tracking-widest text-gray-600 mt-1">{status}</div>
         </div>
+        <ChevronRight size={12} className="text-gray-700 group-hover:text-heritage-gold shrink-0 mt-1 transition-colors" />
     </div>
 );
 
@@ -44,6 +45,9 @@ const Home = () => {
     const [viewMode, setViewMode] = useState('present'); // 'present' or 'future'
     const [vault, setVault] = useState([]);
     const [isVaultOpen, setIsVaultOpen] = useState(false);
+    const [selectedLogSite, setSelectedLogSite] = useState(null);
+    const [isSentinelOpen, setIsSentinelOpen] = useState(false);
+    const [terminalInput, setTerminalInput] = useState('');
 
     const addToVault = (site) => {
         if (!vault.find(item => item.id === site.id)) {
@@ -54,6 +58,16 @@ const Home = () => {
 
     const removeFromVault = (id) => {
         setVault(vault.filter(item => item.id !== id));
+    };
+
+    const handleLogClick = (log) => {
+        // Extract the site name from the log event (format: "SiteName: ...") 
+        const siteName = log.event.split(':')[0].trim().toLowerCase();
+        const matched = ethiopianSites.find(site =>
+            site.name.toLowerCase().includes(siteName) ||
+            siteName.includes(site.name.toLowerCase().split(' ')[0])
+        );
+        if (matched) setSelectedLogSite(matched);
     };
 
     const [metrics, setMetrics] = useState([]);
@@ -374,12 +388,15 @@ const Home = () => {
                             </h4>
                             <div className="space-y-6">
                                 {logsData.map((log, idx) => (
-                                    <LogEntry key={idx} time={log.time} event={log.event} status={log.status} />
+                                    <LogEntry key={idx} time={log.time} event={log.event} status={log.status} onClick={() => handleLogClick(log)} />
                                 ))}
                                 {logsData.length === 0 && <p className="text-[10px] font-future text-gray-600 uppercase tracking-widest">Awaiting sensor data...</p>}
                             </div>
-                            <button className="w-full py-4 border border-heritage-gold/20 font-future text-[10px] tracking-widest uppercase hover:bg-heritage-gold/10 transition-all">
-                                Open Sentinel Terminal
+                            <button
+                                onClick={() => setIsSentinelOpen(true)}
+                                className="w-full mt-6 py-4 border border-heritage-gold/20 font-future text-[10px] tracking-widest uppercase hover:bg-heritage-gold/10 transition-all flex items-center justify-center gap-2"
+                            >
+                                <Terminal size={12} /> Open Sentinel Terminal
                             </button>
                         </div>
                     </div>
@@ -402,6 +419,214 @@ const Home = () => {
                     </button>
                 </div>
             </section>
+
+            {/* ── Sentinel Terminal Modal ── */}
+            <AnimatePresence>
+                {isSentinelOpen && (
+                    <motion.div
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                        className="fixed inset-0 z-[60] bg-black/95 backdrop-blur-md flex flex-col font-mono"
+                    >
+                        {/* Terminal title bar */}
+                        <div className="flex items-center justify-between px-6 py-3 border-b border-heritage-gold/20 bg-black shrink-0">
+                            <div className="flex items-center gap-3">
+                                <div className="flex gap-2">
+                                    <button onClick={() => setIsSentinelOpen(false)} className="w-3 h-3 rounded-full bg-red-500 hover:brightness-125 transition-all" />
+                                    <div className="w-3 h-3 rounded-full bg-amber-400" />
+                                    <div className="w-3 h-3 rounded-full bg-green-500" />
+                                </div>
+                                <span className="text-heritage-gold/70 text-[10px] tracking-[0.3em] uppercase ml-2">sentinel-terminal — heritage-vault v2050</span>
+                            </div>
+                            <button onClick={() => setIsSentinelOpen(false)} className="text-gray-600 hover:text-white transition-colors">
+                                <X size={16} />
+                            </button>
+                        </div>
+
+                        {/* Terminal body */}
+                        <div className="flex-1 overflow-y-auto px-6 py-6 space-y-2 scrollbar-thin scrollbar-thumb-heritage-gold/20">
+                            {/* Boot header */}
+                            <div className="text-heritage-gold text-[11px] tracking-widest mb-4 space-y-1">
+                                <p>HERITAGE VAULT SENTINEL SYSTEM v2050.3.1</p>
+                                <p>ETHIOPIA NATIONAL HERITAGE INTELLIGENCE NETWORK</p>
+                                <p className="text-gray-600">━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━</p>
+                                <p className="text-green-400">[ OK ] Neural sync complete. 12 sites online.</p>
+                                <p className="text-green-400">[ OK ] Sensor mesh: 247 nodes active.</p>
+                                <p className="text-amber-400">[ !! ] 2 anomalies flagged for review.</p>
+                                <p className="text-gray-600">━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━</p>
+                            </div>
+
+                            {/* All log entries streamed */}
+                            {logsData.map((log, idx) => {
+                                const statusColor =
+                                    ['verified', 'success'].includes(log.status.toLowerCase())
+                                        ? 'text-green-400'
+                                        : ['warning', 'alert'].includes(log.status.toLowerCase())
+                                            ? log.status.toLowerCase() === 'alert' ? 'text-red-400' : 'text-amber-400'
+                                            : 'text-cyan-400';
+                                const prefix =
+                                    ['verified', 'success'].includes(log.status.toLowerCase()) ? '[ OK ]'
+                                        : log.status.toLowerCase() === 'alert' ? '[ !! ]'
+                                            : log.status.toLowerCase() === 'warning' ? '[ WN ]'
+                                                : '[ -- ]';
+                                return (
+                                    <motion.div
+                                        key={idx}
+                                        initial={{ opacity: 0, x: -8 }}
+                                        animate={{ opacity: 1, x: 0 }}
+                                        transition={{ delay: idx * 0.06, duration: 0.25 }}
+                                        className="flex items-start gap-4 text-[11px] leading-relaxed group hover:bg-white/5 px-2 py-1 rounded cursor-pointer"
+                                        onClick={() => { setIsSentinelOpen(false); handleLogClick(log); }}
+                                    >
+                                        <span className="text-gray-600 shrink-0 w-16">{log.time}</span>
+                                        <span className={`shrink-0 font-bold ${statusColor}`}>{prefix}</span>
+                                        <span className="text-gray-300 group-hover:text-white transition-colors flex-1">{log.event}</span>
+                                        <span className={`shrink-0 uppercase tracking-widest text-[9px] ${statusColor}`}>{log.status}</span>
+                                    </motion.div>
+                                );
+                            })}
+
+                            {logsData.length === 0 && (
+                                <p className="text-gray-600 text-[11px]">Awaiting telemetry feed...</p>
+                            )}
+
+                            {/* Separator */}
+                            <p className="text-gray-700 text-[11px] pt-4">━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━</p>
+                            <p className="text-heritage-gold/50 text-[11px]">END OF LOG STREAM — {logsData.length} entries loaded.</p>
+                        </div>
+
+                        {/* Terminal input prompt */}
+                        <div className="border-t border-heritage-gold/20 px-6 py-4 flex items-center gap-3 bg-black shrink-0">
+                            <span className="text-heritage-gold text-[11px] font-bold shrink-0">sentinel@vault:~$</span>
+                            <input
+                                autoFocus
+                                value={terminalInput}
+                                onChange={e => setTerminalInput(e.target.value)}
+                                onKeyDown={e => {
+                                    if (e.key === 'Enter') {
+                                        setTerminalInput('');
+                                    }
+                                    if (e.key === 'Escape') {
+                                        setIsSentinelOpen(false);
+                                    }
+                                }}
+                                placeholder="type 'help' for commands, ESC to close..."
+                                className="flex-1 bg-transparent text-green-400 text-[11px] outline-none placeholder:text-gray-700 caret-heritage-gold"
+                            />
+                            <motion.span
+                                animate={{ opacity: [1, 0, 1] }}
+                                transition={{ repeat: Infinity, duration: 1 }}
+                                className="text-heritage-gold text-sm"
+                            >▋</motion.span>
+                        </div>
+                    </motion.div>
+                )}
+            </AnimatePresence>
+
+            {/* Log Site Detail Modal */}
+            <AnimatePresence>
+                {selectedLogSite && (
+                    <>
+                        <motion.div
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            exit={{ opacity: 0 }}
+                            onClick={() => setSelectedLogSite(null)}
+                            className="fixed inset-0 bg-black/70 backdrop-blur-sm z-50"
+                        />
+                        <motion.div
+                            initial={{ opacity: 0, scale: 0.95, y: 20 }}
+                            animate={{ opacity: 1, scale: 1, y: 0 }}
+                            exit={{ opacity: 0, scale: 0.95, y: 20 }}
+                            transition={{ type: 'spring', damping: 25, stiffness: 200 }}
+                            className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[90vw] max-w-2xl z-50 bg-heritage-navy border border-heritage-gold/20 shadow-2xl overflow-hidden"
+                        >
+                            {/* Top image strip */}
+                            <div className="relative h-48 overflow-hidden">
+                                <img
+                                    src={selectedLogSite.image}
+                                    alt={selectedLogSite.name}
+                                    className="w-full h-full object-cover grayscale brightness-50"
+                                />
+                                <div className="absolute inset-0 bg-gradient-to-t from-heritage-navy via-heritage-navy/40 to-transparent" />
+                                {/* Scan line animation */}
+                                <motion.div
+                                    initial={{ top: 0 }}
+                                    animate={{ top: '100%' }}
+                                    transition={{ duration: 2, repeat: Infinity, ease: 'linear' }}
+                                    className="absolute left-0 w-full h-px bg-heritage-gold/40"
+                                />
+                                <div className="absolute bottom-4 left-6 right-6 flex justify-between items-end">
+                                    <div>
+                                        <p className="font-future text-[9px] tracking-[0.4em] uppercase text-heritage-gold/70 mb-1">
+                                            <MapPin size={8} className="inline mr-1" />
+                                            {selectedLogSite.location}
+                                        </p>
+                                        <h3 className="text-3xl font-display font-bold text-white">{selectedLogSite.name}</h3>
+                                    </div>
+                                    <button
+                                        onClick={() => setSelectedLogSite(null)}
+                                        className="text-gray-400 hover:text-white transition-colors flex items-center gap-1 font-future text-[9px] uppercase tracking-widest"
+                                    >
+                                        <X size={14} /> Close
+                                    </button>
+                                </div>
+                            </div>
+
+                            {/* Body */}
+                            <div className="p-8 space-y-6">
+                                {/* UNESCO badge */}
+                                <div className="flex items-center gap-2 text-heritage-gold/80">
+                                    <Globe size={12} />
+                                    <span className="font-future text-[9px] uppercase tracking-widest">{selectedLogSite.unescoStatus}</span>
+                                </div>
+
+                                {/* Description */}
+                                <p className="text-gray-300 font-sans text-sm leading-relaxed">
+                                    {selectedLogSite.description}
+                                </p>
+
+                                {/* Divider */}
+                                <div className="border-t border-white/5 pt-4">
+                                    <h4 className="font-future text-[9px] uppercase tracking-widest text-heritage-gold mb-3">
+                                        <Clock size={10} className="inline mr-2" />
+                                        Historical Context
+                                    </h4>
+                                    <p className="text-gray-400 italic font-sans text-sm leading-relaxed">
+                                        {selectedLogSite.history}
+                                    </p>
+                                </div>
+
+                                {/* 2050 Preservation Highlight */}
+                                <div className="glass-card p-5 border-l-4 border-heritage-gold bg-heritage-gold/5">
+                                    <div className="flex items-center gap-2 text-heritage-gold mb-2">
+                                        <Zap size={12} />
+                                        <span className="font-future text-[9px] uppercase tracking-widest">2050 Preservation Plan</span>
+                                    </div>
+                                    <p className="text-gray-300 text-xs leading-relaxed">{selectedLogSite.future2050.preservation}</p>
+                                </div>
+
+                                {/* Action buttons */}
+                                <div className="flex gap-3 pt-2">
+                                    <button
+                                        onClick={() => { setSelectedLogSite(null); setSelectedSite(selectedLogSite); setViewMode('present'); document.getElementById('detail-view')?.scrollIntoView({ behavior: 'smooth' }); }}
+                                        className="flex-1 py-3 border border-heritage-gold/30 text-heritage-gold font-future text-[9px] uppercase tracking-widest hover:bg-heritage-gold/10 transition-all flex items-center justify-center gap-2"
+                                    >
+                                        <Info size={12} /> Full Profile
+                                    </button>
+                                    <button
+                                        onClick={() => { setSelectedLogSite(null); addToVault(selectedLogSite); }}
+                                        className="flex-1 py-3 bg-heritage-gold/10 border border-heritage-gold/30 text-heritage-gold font-future text-[9px] uppercase tracking-widest hover:bg-heritage-gold hover:text-heritage-navy transition-all flex items-center justify-center gap-2"
+                                    >
+                                        <Vault size={12} /> Add to Vault
+                                    </button>
+                                </div>
+                            </div>
+                        </motion.div>
+                    </>
+                )}
+            </AnimatePresence>
 
             {/* Vault Sidebar (Cart) */}
             <AnimatePresence>

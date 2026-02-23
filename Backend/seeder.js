@@ -299,6 +299,13 @@ const logs = [
     { time: '23:12:08', event: 'Simien: Drone Population Count (Walia Ibex)', status: 'Success' },
     { time: '22:30:45', event: 'Harar: Urban Encroachment Alert (West Edge)', status: 'Warning' },
     { time: '21:15:20', event: 'Konso: Climate Adaptation Drain Check', status: 'Operational' },
+    { time: '20:44:33', event: 'Fasil Ghebbi: Wall Moisture Level — Within Threshold', status: 'Stable' },
+    { time: '19:58:17', event: 'Tiya Stelae: Lichen Growth Detected on Stelae #14', status: 'Warning' },
+    { time: '18:30:02', event: 'Debre Damo: Manuscript Climate Chamber — Optimal', status: 'Verified' },
+    { time: '17:22:49', event: 'Erta Ale: Seismic Activity Spike Detected (2.1 Mag)', status: 'Alert' },
+    { time: '16:05:11', event: 'Temple of Yeha: UV Oxidation Shield Integrity Check', status: 'Operational' },
+    { time: '14:48:38', event: 'Wanchi Crater Lake: pH Sensor Reading — 7.2 (Normal)', status: 'Success' },
+    { time: '13:31:55', event: 'Sof Omer Caves: Flood-Diversion AI Calibration Run', status: 'Operational' },
 ];
 
 // Import into DB
