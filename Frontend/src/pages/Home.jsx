@@ -4,7 +4,8 @@ import Predictor from '../components/Predictor';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
     Shield, Globe, Clock, Zap, AlertTriangle, TrendingDown,
-    MapPin, Info, ChevronRight, Activity, Wind, CloudRain, Vault, X, Terminal
+    MapPin, Info, ChevronRight, Activity, Wind, CloudRain, Vault, X, Terminal,
+    Heart, User, Mail, CheckCircle, DollarSign, CreditCard
 } from 'lucide-react';
 import { ethiopianSites } from '../data/ethiopianSites';
 
@@ -48,6 +49,26 @@ const Home = () => {
     const [selectedLogSite, setSelectedLogSite] = useState(null);
     const [isSentinelOpen, setIsSentinelOpen] = useState(false);
     const [terminalInput, setTerminalInput] = useState('');
+    const [isDonateOpen, setIsDonateOpen] = useState(false);
+    const [isSentinelSignupOpen, setIsSentinelSignupOpen] = useState(false);
+    const [donateAmount, setDonateAmount] = useState(50);
+    const [donateCustom, setDonateCustom] = useState('');
+    const [donateForm, setDonateForm] = useState({ name: '', email: '', message: '' });
+    const [donateSuccess, setDonateSuccess] = useState(false);
+    const [sentinelForm, setSentinelForm] = useState({ name: '', email: '', role: '', motivation: '' });
+    const [sentinelSuccess, setSentinelSuccess] = useState(false);
+
+    const handleDonateSubmit = (e) => {
+        e.preventDefault();
+        setDonateSuccess(true);
+        setTimeout(() => { setDonateSuccess(false); setIsDonateOpen(false); setDonateForm({ name: '', email: '', message: '' }); }, 3000);
+    };
+
+    const handleSentinelSubmit = (e) => {
+        e.preventDefault();
+        setSentinelSuccess(true);
+        setTimeout(() => { setSentinelSuccess(false); setIsSentinelSignupOpen(false); setSentinelForm({ name: '', email: '', role: '', motivation: '' }); }, 3000);
+    };
 
     const addToVault = (site) => {
         if (!vault.find(item => item.id === site.id)) {
@@ -411,14 +432,216 @@ const Home = () => {
                     <span className="text-heritage-gold italic">A Permanent Future.</span>
                 </h2>
                 <div className="flex flex-col sm:flex-row gap-6">
-                    <button className="px-12 py-5 bg-heritage-gold text-heritage-navy font-future font-bold text-xs uppercase tracking-[0.3em] hover:brightness-110 transition-all">
-                        Donate to Preservation
-                    </button>
-                    <button className="px-12 py-5 border border-heritage-gold text-heritage-gold font-future font-bold text-xs uppercase tracking-[0.3em] hover:bg-heritage-gold hover:text-heritage-navy transition-all">
-                        Become a Sentinel
-                    </button>
+                    <motion.button
+                        whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }}
+                        onClick={() => { setIsDonateOpen(true); setDonateSuccess(false); }}
+                        className="px-12 py-5 bg-heritage-gold text-heritage-navy font-future font-bold text-xs uppercase tracking-[0.3em] hover:brightness-110 transition-all flex items-center gap-3"
+                    >
+                        <Heart size={14} /> Donate to Preservation
+                    </motion.button>
+                    <motion.button
+                        whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }}
+                        onClick={() => { setIsSentinelSignupOpen(true); setSentinelSuccess(false); }}
+                        className="px-12 py-5 border border-heritage-gold text-heritage-gold font-future font-bold text-xs uppercase tracking-[0.3em] hover:bg-heritage-gold hover:text-heritage-navy transition-all flex items-center gap-3"
+                    >
+                        <Shield size={14} /> Become a Sentinel
+                    </motion.button>
                 </div>
             </section>
+
+            {/* ── Donate to Preservation Modal ── */}
+            <AnimatePresence>
+                {isDonateOpen && (
+                    <>
+                        <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+                            onClick={() => setIsDonateOpen(false)}
+                            className="fixed inset-0 bg-black/70 backdrop-blur-sm z-50" />
+                        <motion.div
+                            initial={{ opacity: 0, y: 30, scale: 0.96 }}
+                            animate={{ opacity: 1, y: 0, scale: 1 }}
+                            exit={{ opacity: 0, y: 30, scale: 0.96 }}
+                            transition={{ type: 'spring', damping: 24, stiffness: 200 }}
+                            className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[90vw] max-w-lg z-50 bg-heritage-navy border border-heritage-gold/20 shadow-2xl overflow-hidden"
+                        >
+                            {donateSuccess ? (
+                                <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="flex flex-col items-center justify-center py-20 px-8 text-center gap-6">
+                                    <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} transition={{ type: 'spring', stiffness: 200 }}>
+                                        <CheckCircle className="w-16 h-16 text-green-400" />
+                                    </motion.div>
+                                    <h3 className="text-2xl font-display font-bold text-white">Thank You, Guardian.</h3>
+                                    <p className="text-gray-400 font-future text-[10px] tracking-widest uppercase">Your contribution secures Ethiopia's heritage for future generations.</p>
+                                </motion.div>
+                            ) : (
+                                <>
+                                    {/* Header */}
+                                    <div className="relative h-28 bg-gradient-to-br from-heritage-gold/20 to-heritage-navy flex items-end p-6 border-b border-heritage-gold/10">
+                                        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,rgba(212,175,55,0.15),transparent)]" />
+                                        <div className="flex-1">
+                                            <p className="font-future text-[9px] tracking-[0.4em] uppercase text-heritage-gold/70 mb-1">Heritage Conservation Fund</p>
+                                            <h3 className="text-2xl font-display font-bold text-white">Donate to Preservation</h3>
+                                        </div>
+                                        <button onClick={() => setIsDonateOpen(false)} className="text-gray-500 hover:text-white transition-colors"><X size={18} /></button>
+                                    </div>
+
+                                    {/* Body */}
+                                    <form onSubmit={handleDonateSubmit} className="p-8 space-y-6">
+                                        {/* Amount selector */}
+                                        <div>
+                                            <label className="block font-future text-[9px] uppercase tracking-widest text-heritage-gold mb-3"><DollarSign size={10} className="inline mr-1" />Select Amount (USD)</label>
+                                            <div className="grid grid-cols-4 gap-2 mb-3">
+                                                {[10, 25, 50, 100].map(amt => (
+                                                    <button type="button" key={amt}
+                                                        onClick={() => { setDonateAmount(amt); setDonateCustom(''); }}
+                                                        className={`py-3 font-future text-xs uppercase tracking-wider border transition-all ${donateAmount === amt && !donateCustom
+                                                                ? 'bg-heritage-gold text-heritage-navy border-heritage-gold'
+                                                                : 'border-white/10 text-gray-400 hover:border-heritage-gold/40 hover:text-white'
+                                                            }`}
+                                                    >${amt}</button>
+                                                ))}
+                                            </div>
+                                            <input
+                                                type="number" min="1" placeholder="Custom amount..."
+                                                value={donateCustom}
+                                                onChange={e => { setDonateCustom(e.target.value); setDonateAmount(null); }}
+                                                className="w-full bg-white/5 border border-white/10 focus:border-heritage-gold/40 px-4 py-3 text-sm text-white outline-none font-future placeholder:text-gray-600 transition-colors"
+                                            />
+                                        </div>
+
+                                        {/* Name & Email */}
+                                        <div className="grid grid-cols-2 gap-4">
+                                            <div>
+                                                <label className="block font-future text-[9px] uppercase tracking-widest text-gray-500 mb-2"><User size={9} className="inline mr-1" />Full Name</label>
+                                                <input required value={donateForm.name} onChange={e => setDonateForm({ ...donateForm, name: e.target.value })}
+                                                    className="w-full bg-white/5 border border-white/10 focus:border-heritage-gold/40 px-4 py-3 text-sm text-white outline-none placeholder:text-gray-600 transition-colors"
+                                                    placeholder="Your name" />
+                                            </div>
+                                            <div>
+                                                <label className="block font-future text-[9px] uppercase tracking-widest text-gray-500 mb-2"><Mail size={9} className="inline mr-1" />Email</label>
+                                                <input required type="email" value={donateForm.email} onChange={e => setDonateForm({ ...donateForm, email: e.target.value })}
+                                                    className="w-full bg-white/5 border border-white/10 focus:border-heritage-gold/40 px-4 py-3 text-sm text-white outline-none placeholder:text-gray-600 transition-colors"
+                                                    placeholder="you@email.com" />
+                                            </div>
+                                        </div>
+
+                                        {/* Optional message */}
+                                        <div>
+                                            <label className="block font-future text-[9px] uppercase tracking-widest text-gray-500 mb-2">Message (optional)</label>
+                                            <textarea rows={2} value={donateForm.message} onChange={e => setDonateForm({ ...donateForm, message: e.target.value })}
+                                                className="w-full bg-white/5 border border-white/10 focus:border-heritage-gold/40 px-4 py-3 text-sm text-white outline-none placeholder:text-gray-600 transition-colors resize-none"
+                                                placeholder="Why this cause matters to you..." />
+                                        </div>
+
+                                        {/* Summary + submit */}
+                                        <div className="flex items-center justify-between pt-2">
+                                            <div className="text-heritage-gold">
+                                                <span className="font-future text-[9px] uppercase tracking-widest text-gray-500">Total: </span>
+                                                <span className="font-display text-2xl font-bold">${donateCustom || donateAmount || 0}</span>
+                                            </div>
+                                            <motion.button
+                                                whileTap={{ scale: 0.95 }} type="submit"
+                                                className="px-10 py-4 bg-heritage-gold text-heritage-navy font-future font-bold text-[10px] uppercase tracking-widest hover:brightness-110 transition-all flex items-center gap-2"
+                                            >
+                                                <CreditCard size={13} /> Confirm Donation
+                                            </motion.button>
+                                        </div>
+                                    </form>
+                                </>
+                            )}
+                        </motion.div>
+                    </>
+                )}
+            </AnimatePresence>
+
+            {/* ── Become a Sentinel Modal ── */}
+            <AnimatePresence>
+                {isSentinelSignupOpen && (
+                    <>
+                        <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+                            onClick={() => setIsSentinelSignupOpen(false)}
+                            className="fixed inset-0 bg-black/70 backdrop-blur-sm z-50" />
+                        <motion.div
+                            initial={{ opacity: 0, y: 30, scale: 0.96 }}
+                            animate={{ opacity: 1, y: 0, scale: 1 }}
+                            exit={{ opacity: 0, y: 30, scale: 0.96 }}
+                            transition={{ type: 'spring', damping: 24, stiffness: 200 }}
+                            className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[90vw] max-w-lg z-50 bg-heritage-navy border border-heritage-gold/20 shadow-2xl overflow-hidden"
+                        >
+                            {sentinelSuccess ? (
+                                <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="flex flex-col items-center justify-center py-20 px-8 text-center gap-6">
+                                    <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} transition={{ type: 'spring', stiffness: 200 }}>
+                                        <Shield className="w-16 h-16 text-heritage-gold" />
+                                    </motion.div>
+                                    <h3 className="text-2xl font-display font-bold text-white">Welcome, Sentinel.</h3>
+                                    <p className="text-gray-400 font-future text-[10px] tracking-widest uppercase">Your mission begins. Protecting Ethiopia's heritage across time.</p>
+                                    <div className="w-px h-8 bg-heritage-gold/30" />
+                                    <p className="font-future text-[9px] tracking-[0.3em] text-heritage-gold/60 uppercase">Access granted — sentinel@vault</p>
+                                </motion.div>
+                            ) : (
+                                <>
+                                    {/* Header */}
+                                    <div className="relative h-28 bg-gradient-to-br from-white/5 to-heritage-navy flex items-end p-6 border-b border-heritage-gold/10">
+                                        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_left,rgba(212,175,55,0.08),transparent)]" />
+                                        <div className="flex-1">
+                                            <p className="font-future text-[9px] tracking-[0.4em] uppercase text-heritage-gold/70 mb-1">Guardian Program — Ethiopia 2050</p>
+                                            <h3 className="text-2xl font-display font-bold text-white">Become a Sentinel</h3>
+                                        </div>
+                                        <button onClick={() => setIsSentinelSignupOpen(false)} className="text-gray-500 hover:text-white transition-colors"><X size={18} /></button>
+                                    </div>
+
+                                    {/* Body */}
+                                    <form onSubmit={handleSentinelSubmit} className="p-8 space-y-5">
+                                        <div className="grid grid-cols-2 gap-4">
+                                            <div>
+                                                <label className="block font-future text-[9px] uppercase tracking-widest text-gray-500 mb-2"><User size={9} className="inline mr-1" />Full Name</label>
+                                                <input required value={sentinelForm.name} onChange={e => setSentinelForm({ ...sentinelForm, name: e.target.value })}
+                                                    className="w-full bg-white/5 border border-white/10 focus:border-heritage-gold/40 px-4 py-3 text-sm text-white outline-none placeholder:text-gray-600 transition-colors"
+                                                    placeholder="Your name" />
+                                            </div>
+                                            <div>
+                                                <label className="block font-future text-[9px] uppercase tracking-widest text-gray-500 mb-2"><Mail size={9} className="inline mr-1" />Email</label>
+                                                <input required type="email" value={sentinelForm.email} onChange={e => setSentinelForm({ ...sentinelForm, email: e.target.value })}
+                                                    className="w-full bg-white/5 border border-white/10 focus:border-heritage-gold/40 px-4 py-3 text-sm text-white outline-none placeholder:text-gray-600 transition-colors"
+                                                    placeholder="you@email.com" />
+                                            </div>
+                                        </div>
+
+                                        <div>
+                                            <label className="block font-future text-[9px] uppercase tracking-widest text-gray-500 mb-2">Guardian Role</label>
+                                            <select required value={sentinelForm.role} onChange={e => setSentinelForm({ ...sentinelForm, role: e.target.value })}
+                                                className="w-full bg-heritage-navy border border-white/10 focus:border-heritage-gold/40 px-4 py-3 text-sm text-white outline-none transition-colors appearance-none cursor-pointer"
+                                            >
+                                                <option value="" disabled>Select your expertise...</option>
+                                                <option value="archaeologist">Archaeologist</option>
+                                                <option value="conservator">Conservation Specialist</option>
+                                                <option value="technologist">Heritage Technologist</option>
+                                                <option value="educator">Cultural Educator</option>
+                                                <option value="donor">Philanthropic Supporter</option>
+                                                <option value="volunteer">Community Volunteer</option>
+                                            </select>
+                                        </div>
+
+                                        <div>
+                                            <label className="block font-future text-[9px] uppercase tracking-widest text-gray-500 mb-2">Why do you want to protect Ethiopia's heritage?</label>
+                                            <textarea required rows={3} value={sentinelForm.motivation} onChange={e => setSentinelForm({ ...sentinelForm, motivation: e.target.value })}
+                                                className="w-full bg-white/5 border border-white/10 focus:border-heritage-gold/40 px-4 py-3 text-sm text-white outline-none placeholder:text-gray-600 transition-colors resize-none"
+                                                placeholder="Share your motivation..." />
+                                        </div>
+
+                                        <div className="pt-2">
+                                            <motion.button
+                                                whileTap={{ scale: 0.95 }} type="submit"
+                                                className="w-full py-4 border border-heritage-gold text-heritage-gold font-future font-bold text-[10px] uppercase tracking-widest hover:bg-heritage-gold hover:text-heritage-navy transition-all flex items-center justify-center gap-2"
+                                            >
+                                                <Shield size={13} /> Activate Sentinel Status
+                                            </motion.button>
+                                        </div>
+                                    </form>
+                                </>
+                            )}
+                        </motion.div>
+                    </>
+                )}
+            </AnimatePresence>
 
             {/* ── Sentinel Terminal Modal ── */}
             <AnimatePresence>
