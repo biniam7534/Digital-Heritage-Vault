@@ -6,6 +6,41 @@ import {
 import { motion } from 'framer-motion';
 
 const AdminDashboard = () => {
+    const [sites, setSites] = React.useState([]);
+    const [loading, setLoading] = React.useState(true);
+    const [stats, setStats] = React.useState({ totalArtifacts: 0, totalSites: 0 });
+
+    React.useEffect(() => {
+        const fetchSites = async () => {
+            try {
+                const res = await fetch('http://localhost:5000/api/v1/heritage/sites');
+                const json = await res.json();
+                if (json.success) {
+                    setSites(json.data);
+                    setStats(prev => ({ ...prev, totalArtifacts: json.count }));
+                }
+            } catch (err) {
+                console.error("Error fetching admin sites:", err);
+            } finally {
+                setLoading(false);
+            }
+        };
+        fetchSites();
+    }, []);
+
+    const handleDelete = async (id) => {
+        if (!window.confirm('Are you sure you want to delete this site?')) return;
+        try {
+            const res = await fetch(`http://localhost:5000/api/v1/heritage/sites/${id}`, { method: 'DELETE' });
+            const json = await res.json();
+            if (json.success) {
+                setSites(sites.filter(s => s._id !== id));
+            }
+        } catch (err) {
+            console.error("Error deleting site:", err);
+        }
+    };
+
     return (
         <div className="min-h-screen bg-heritage-dark flex font-serif">
 
@@ -52,9 +87,9 @@ const AdminDashboard = () => {
 
                 {/* Stats Cards */}
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
-                    <StatCard icon={<Database />} label="Total Artifacts" value="128" />
-                    <StatCard icon={<Bell />} label="Pending Reviews" value="12" />
-                    <StatCard icon={<Users />} label="Total Users" value="342" />
+                    <StatCard icon={<Database />} label="Total Artifacts" value={sites.length.toString()} />
+                    <StatCard icon={<Bell />} label="Pending Reviews" value="5" />
+                    <StatCard icon={<Users />} label="Total Sentinels" value="48" />
                 </div>
 
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
@@ -62,12 +97,20 @@ const AdminDashboard = () => {
                     {/* Recent Artifacts List */}
                     <div className="lg:col-span-2 space-y-8">
                         <h2 className="font-display text-lg tracking-widest text-heritage-paper uppercase underline decoration-heritage-gold/30 underline-offset-8">
-                            Recent Artifacts
+                            Managed Artifacts
                         </h2>
                         <div className="space-y-4">
-                            <ArtifactItem title="Ancient Vase" origin="Mesh | Greece" image="https://images.unsplash.com/photo-1605721911519-3dfeb3be25e7?auto=format&fit=crop&q=80&w=150" />
-                            <ArtifactItem title="Old Manuscript" origin="Veld | France" image="https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?auto=format&fit=crop&q=80&w=150" />
-                            <ArtifactItem title="Vintage Camera" origin="Veld | France" image="https://images.unsplash.com/photo-1550745165-9bc0b252726f?auto=format&fit=crop&q=80&w=150" />
+                            {sites.map(site => (
+                                <ArtifactItem
+                                    key={site._id}
+                                    title={site.name}
+                                    origin={site.location}
+                                    image={site.image}
+                                    onDelete={() => handleDelete(site._id)}
+                                />
+                            ))}
+                            {loading && <div className="text-heritage-gold animate-pulse text-xs tracking-widest uppercase">Fetching Records...</div>}
+                            {!loading && sites.length === 0 && <div className="text-heritage-paper/30 text-xs tracking-widest uppercase">No Records Found</div>}
                         </div>
                     </div>
 
@@ -78,36 +121,36 @@ const AdminDashboard = () => {
                             <h3 className="font-display text-xs uppercase tracking-[0.2em] text-heritage-gold mb-6">Quick Stats</h3>
                             <div className="space-y-6">
                                 <div className="flex justify-between items-end border-b border-heritage-gold/5 pb-4">
-                                    <span className="font-serif text-heritage-paper/60 uppercase text-[10px] tracking-widest">Uploads This Month</span>
-                                    <span className="font-display text-2xl text-heritage-paper">24</span>
+                                    <span className="font-serif text-heritage-paper/60 uppercase text-[10px] tracking-widest">Active Monitors</span>
+                                    <span className="font-display text-2xl text-heritage-paper">12</span>
                                 </div>
                                 <div className="flex justify-between items-end border-b border-heritage-gold/5 pb-4">
                                     <span className="font-serif text-heritage-paper/60 uppercase text-[10px] tracking-widest flex items-center gap-2">
-                                        Site Visits Today <TrendingUp size={12} />
+                                        Data Points <TrendingUp size={12} />
                                     </span>
-                                    <span className="font-display text-2xl text-heritage-paper">1,234</span>
+                                    <span className="font-display text-2xl text-heritage-paper">8.4k</span>
                                 </div>
                             </div>
                         </div>
 
                         {/* Add New Artifact Form */}
                         <div className="bg-heritage-paper/5 p-8 border border-heritage-gold/10 rounded-sm">
-                            <h3 className="font-display text-sm uppercase tracking-widest text-heritage-paper mb-6">Add New Artifact</h3>
-                            <form className="space-y-4">
+                            <h3 className="font-display text-sm uppercase tracking-widest text-heritage-paper mb-6">Add New Site</h3>
+                            <form className="space-y-4" onSubmit={(e) => { e.preventDefault(); alert('In demo mode - please use seeder for bulk imports.'); }}>
                                 <div>
-                                    <label className="block text-[10px] uppercase tracking-widest text-heritage-paper/40 mb-2">Title</label>
-                                    <input type="text" className="w-full bg-heritage-dark/30 border border-heritage-gold/10 p-3 text-sm focus:outline-none" />
+                                    <label className="block text-[10px] uppercase tracking-widest text-heritage-paper/40 mb-2">Site Name</label>
+                                    <input type="text" className="w-full bg-heritage-dark/30 border border-heritage-gold/10 p-3 text-sm focus:outline-none text-white" placeholder="Lalibela Church..." />
                                 </div>
                                 <div>
-                                    <label className="block text-[10px] uppercase tracking-widest text-heritage-paper/40 mb-2">Description</label>
-                                    <textarea className="w-full bg-heritage-dark/30 border border-heritage-gold/10 p-3 text-sm focus:outline-none h-24" />
+                                    <label className="block text-[10px] uppercase tracking-widest text-heritage-paper/40 mb-2">Location</label>
+                                    <input type="text" className="w-full bg-heritage-dark/30 border border-heritage-gold/10 p-3 text-sm focus:outline-none text-white" placeholder="Amhara Region..." />
                                 </div>
                                 <div className="flex flex-col gap-4">
                                     <button type="button" className="w-full bg-heritage-gold/10 border border-heritage-gold/30 p-3 text-[10px] uppercase tracking-widest text-heritage-paper hover:bg-heritage-gold/20 transition-all">
-                                        Upload Image
+                                        Upload Coordinates
                                     </button>
-                                    <button type="button" className="w-full bg-heritage-gold text-heritage-dark p-4 font-display text-[10px] uppercase tracking-widest font-bold hover:bg-heritage-paper transition-all">
-                                        Submit Artifact
+                                    <button type="submit" className="w-full bg-heritage-gold text-heritage-dark p-4 font-display text-[10px] uppercase tracking-widest font-bold hover:bg-heritage-paper transition-all">
+                                        Initialize Site
                                     </button>
                                 </div>
                             </form>
@@ -155,7 +198,7 @@ const StatCard = ({ icon, label, value }) => (
     </div>
 );
 
-const ArtifactItem = ({ title, origin, image }) => (
+const ArtifactItem = ({ title, origin, image, onDelete }) => (
     <div className="bg-white/5 p-4 flex items-center justify-between border border-transparent hover:border-heritage-gold/10 transition-all rounded-sm group">
         <div className="flex items-center gap-4">
             <img src={image} alt={title} className="w-12 h-12 object-cover grayscale brightness-75 rounded-sm" />
@@ -168,7 +211,10 @@ const ArtifactItem = ({ title, origin, image }) => (
             <button className="p-2 bg-heritage-gold/10 text-heritage-paper/60 hover:bg-heritage-gold hover:text-heritage-dark transition-all rounded-sm">
                 <Edit3 size={14} />
             </button>
-            <button className="p-2 bg-red-900/10 text-red-500/60 hover:bg-red-500 hover:text-white transition-all rounded-sm">
+            <button
+                onClick={onDelete}
+                className="p-2 bg-red-900/10 text-red-500/60 hover:bg-red-500 hover:text-white transition-all rounded-sm"
+            >
                 <Trash2 size={14} />
             </button>
         </div>

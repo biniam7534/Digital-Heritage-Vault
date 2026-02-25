@@ -7,7 +7,7 @@ import {
     MapPin, Info, ChevronRight, Activity, Wind, CloudRain, Vault, X, Terminal,
     Heart, User, Mail, CheckCircle, DollarSign, CreditCard
 } from 'lucide-react';
-import { ethiopianSites } from '../data/ethiopianSites';
+// Data is now fetched from the API instead of local ethiopianSites data
 
 const RiskFactor = ({ label, value, icon, color }) => (
     <div className="glass-card p-6 border-white/5">
@@ -57,6 +57,8 @@ const Home = () => {
     const [donateSuccess, setDonateSuccess] = useState(false);
     const [sentinelForm, setSentinelForm] = useState({ name: '', email: '', role: '', motivation: '' });
     const [sentinelSuccess, setSentinelSuccess] = useState(false);
+    const [sites, setSites] = useState([]);
+    const [loading, setLoading] = useState(true);
 
     const handleDonateSubmit = (e) => {
         e.preventDefault();
@@ -71,20 +73,20 @@ const Home = () => {
     };
 
     const addToVault = (site) => {
-        if (!vault.find(item => item.id === site.id)) {
+        if (!vault.find(item => item._id === site._id)) {
             setVault([...vault, site]);
         }
         setIsVaultOpen(true);
     };
 
     const removeFromVault = (id) => {
-        setVault(vault.filter(item => item.id !== id));
+        setVault(vault.filter(item => item._id !== id));
     };
 
     const handleLogClick = (log) => {
         // Extract the site name from the log event (format: "SiteName: ...") 
         const siteName = log.event.split(':')[0].trim().toLowerCase();
-        const matched = ethiopianSites.find(site =>
+        const matched = sites.find(site =>
             site.name.toLowerCase().includes(siteName) ||
             siteName.includes(site.name.toLowerCase().split(' ')[0])
         );
@@ -97,16 +99,22 @@ const Home = () => {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const [metricsRes, logsRes] = await Promise.all([
+                const [metricsRes, logsRes, sitesRes] = await Promise.all([
                     fetch('http://localhost:5000/api/v1/heritage/metrics'),
-                    fetch('http://localhost:5000/api/v1/heritage/logs')
+                    fetch('http://localhost:5000/api/v1/heritage/logs'),
+                    fetch('http://localhost:5000/api/v1/heritage/sites')
                 ]);
                 const metricsJson = await metricsRes.json();
                 const logsJson = await logsRes.json();
+                const sitesJson = await sitesRes.json();
+
                 if (metricsJson.success) setMetrics(metricsJson.data);
                 if (logsJson.success) setLogsData(logsJson.data);
+                if (sitesJson.success) setSites(sitesJson.data);
             } catch (err) {
                 console.error("Dashboard sync failed:", err);
+            } finally {
+                setLoading(false);
             }
         };
         fetchData();
@@ -150,9 +158,9 @@ const Home = () => {
                     </div>
 
                     <div className="flex overflow-x-auto pb-12 gap-8 snap-x snap-mandatory scrollbar-hide no-scrollbar">
-                        {ethiopianSites.map((site) => (
+                        {sites.map((site) => (
                             <motion.div
-                                key={site.id}
+                                key={site._id}
                                 whileHover={{ y: -10 }}
                                 onClick={() => setSelectedSite(site)}
                                 className="flex-none w-[300px] md:w-[380px] snap-center glass-card group cursor-pointer overflow-hidden border border-white/5 hover:border-heritage-gold/50 transition-all duration-500"
@@ -493,8 +501,8 @@ const Home = () => {
                                                     <button type="button" key={amt}
                                                         onClick={() => { setDonateAmount(amt); setDonateCustom(''); }}
                                                         className={`py-3 font-future text-xs uppercase tracking-wider border transition-all ${donateAmount === amt && !donateCustom
-                                                                ? 'bg-heritage-gold text-heritage-navy border-heritage-gold'
-                                                                : 'border-white/10 text-gray-400 hover:border-heritage-gold/40 hover:text-white'
+                                                            ? 'bg-heritage-gold text-heritage-navy border-heritage-gold'
+                                                            : 'border-white/10 text-gray-400 hover:border-heritage-gold/40 hover:text-white'
                                                             }`}
                                                     >${amt}</button>
                                                 ))}
@@ -890,15 +898,15 @@ const Home = () => {
                                     </div>
                                 ) : (
                                     vault.map(item => (
-                                        <div key={item.id} className="flex gap-4 group">
+                                        <div key={item._id} className="flex gap-4 group">
                                             <div className="w-20 h-20 bg-white/5 rounded-sm overflow-hidden shrink-0 border border-white/10">
                                                 <img src={item.image} alt={item.name} className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all" />
                                             </div>
                                             <div className="flex-1 flex flex-col justify-center">
                                                 <h4 className="text-sm font-display font-bold text-white mb-1 uppercase">{item.name}</h4>
-                                                <p className="text-[8px] font-future text-heritage-gold/60 uppercase tracking-widest">{item.location.split(',')[0]}</p>
+                                                <p className="text-[8px] font-future text-heritage-gold/60 uppercase tracking-widest">{item.location && item.location.split(',')[0]}</p>
                                                 <button
-                                                    onClick={() => removeFromVault(item.id)}
+                                                    onClick={() => removeFromVault(item._id)}
                                                     className="mt-2 text-[8px] font-future text-red-500/50 hover:text-red-500 uppercase tracking-widest w-fit"
                                                 >
                                                     Remove from archive

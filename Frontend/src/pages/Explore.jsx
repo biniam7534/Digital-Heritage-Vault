@@ -4,24 +4,53 @@ import { motion } from 'framer-motion';
 
 const Explore = () => {
     const [activeFilter, setActiveFilter] = useState('All');
+    const [artifacts, setArtifacts] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [searchTerm, setSearchTerm] = useState('');
+
+    useEffect(() => {
+        const fetchSites = async () => {
+            try {
+                const res = await fetch('http://localhost:5000/api/v1/heritage/sites');
+                const json = await res.json();
+                if (json.success) {
+                    setArtifacts(json.data);
+                }
+            } catch (err) {
+                console.error("Error fetching sites:", err);
+            } finally {
+                setLoading(false);
+            }
+        };
+        fetchSites();
+    }, []);
 
     const filters = [
         { name: 'All', icon: null },
-        { name: 'Artifacts', icon: <Shield className="w-4 h-4" /> },
-        { name: 'Documents', icon: <FileText className="w-4 h-4" /> },
-        { name: 'Audio', icon: <Music className="w-4 h-4" /> },
+        { name: 'World Heritage', icon: <Shield className="w-4 h-4" /> },
+        { name: 'Cultural', icon: <FileText className="w-4 h-4" /> },
+        { name: 'Natural', icon: <Music className="w-4 h-4" /> },
     ];
 
-    const artifacts = [
-        { id: 1, title: 'Egyptian Sarcophagus', type: 'Artifact', image: 'https://images.unsplash.com/photo-1594787318286-3d835c1d207f?auto=format&fit=crop&q=80&w=600' },
-        { id: 2, title: 'Medieval Sword', type: 'Artifact', image: 'https://images.unsplash.com/photo-1518709268805-4e9042af9f23?auto=format&fit=crop&q=80&w=600' },
-        { id: 3, title: 'Historical Document', type: 'Document', image: 'https://images.unsplash.com/photo-1627916640411-96530664e1f7?auto=format&fit=crop&q=80&w=600' },
-        { id: 4, title: 'Native Pottery', type: 'Artifact', image: 'https://images.unsplash.com/photo-1605721911519-3dfeb3be25e7?auto=format&fit=crop&q=80&w=600' },
-        { id: 5, title: 'Native Pottery', type: 'Artifact', image: 'https://images.unsplash.com/photo-1605721911519-3dfeb3be25e7?auto=format&fit=crop&q=80&w=600' },
-        { id: 6, title: 'Antique Radio', type: 'Artifact', image: 'https://images.unsplash.com/photo-1550745165-9bc0b252726f?auto=format&fit=crop&q=80&w=600' },
-        { id: 7, title: 'Ancient Statue', type: 'Artifact', image: 'https://images.unsplash.com/photo-1594787318286-3d835c1d207f?auto=format&fit=crop&q=80&w=600' },
-        { id: 8, title: 'Ancient Statue', type: 'Artifact', image: 'https://images.unsplash.com/photo-1594787318286-3d835c1d207f?auto=format&fit=crop&q=80&w=600' },
-    ];
+    const filteredArtifacts = artifacts.filter(item => {
+        const matchesFilter = activeFilter === 'All' ||
+            (activeFilter === 'World Heritage' && item.unescoStatus.includes('World Heritage')) ||
+            (activeFilter === 'Cultural' && item.unescoStatus.includes('Cultural')) ||
+            (activeFilter === 'Natural' && item.unescoStatus.includes('Natural'));
+
+        const matchesSearch = item.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            item.description.toLowerCase().includes(searchTerm.toLowerCase());
+
+        return matchesFilter && matchesSearch;
+    });
+
+    if (loading) {
+        return (
+            <div className="pt-32 pb-20 bg-heritage-paper min-h-screen parchment flex items-center justify-center">
+                <div className="text-2xl font-display text-heritage-dark animate-pulse">Loading Repository...</div>
+            </div>
+        );
+    }
 
     return (
         <div className="pt-32 pb-20 bg-heritage-paper min-h-screen parchment">
@@ -36,6 +65,8 @@ const Explore = () => {
                         <input
                             type="text"
                             placeholder="Search..."
+                            value={searchTerm}
+                            onChange={(e) => setSearchTerm(e.target.value)}
                             className="w-full bg-white/50 border border-heritage-dark/10 py-3 px-12 focus:ring-1 focus:ring-heritage-gold focus:outline-none font-serif italic text-lg shadow-inner"
                         />
                         <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-heritage-dark/40 w-5 h-5" />
@@ -52,8 +83,8 @@ const Explore = () => {
                             key={filter.name}
                             onClick={() => setActiveFilter(filter.name)}
                             className={`flex items-center gap-2 px-8 py-2 font-display text-sm uppercase tracking-widest transition-all border ${activeFilter === filter.name
-                                    ? 'bg-heritage-dark text-heritage-paper border-heritage-dark shadow-xl'
-                                    : 'bg-heritage-paper text-heritage-dark border-heritage-dark/10 hover:border-heritage-gold'
+                                ? 'bg-heritage-dark text-heritage-paper border-heritage-dark shadow-xl'
+                                : 'bg-heritage-paper text-heritage-dark border-heritage-dark/10 hover:border-heritage-gold'
                                 }`}
                         >
                             {filter.icon}
@@ -64,18 +95,19 @@ const Explore = () => {
 
                 {/* Artifact Grid */}
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
-                    {artifacts.map((item, index) => (
+                    {filteredArtifacts.map((item, index) => (
                         <motion.div
-                            key={item.id}
+                            key={item._id}
                             initial={{ opacity: 0, y: 20 }}
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ delay: index * 0.1 }}
                             className="group cursor-pointer"
+                            onClick={() => window.location.href = `/artifact/${item._id}`}
                         >
                             <div className="relative aspect-square overflow-hidden mb-4 shadow-lg group-hover:rotate-1 transition-transform duration-500">
                                 <img
                                     src={item.image}
-                                    alt={item.title}
+                                    alt={item.name}
                                     className="w-full h-full object-cover grayscale-[0.3] group-hover:grayscale-0 transition-all duration-700"
                                 />
                                 <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-heritage-dark/80 to-transparent p-4 opacity-0 group-hover:opacity-100 transition-opacity">
@@ -86,10 +118,10 @@ const Explore = () => {
                             </div>
                             <div className="flex justify-between items-start pt-2">
                                 <h3 className="font-display font-bold text-lg text-heritage-dark leading-tight group-hover:text-heritage-gold transition-colors">
-                                    {item.title}
+                                    {item.name}
                                 </h3>
                                 <div className="p-1 bg-heritage-dark/5 rounded-sm">
-                                    {item.type === 'Document' ? <FileText className="w-3 h-3 text-heritage-dark/40" /> : <Shield className="w-3 h-3 text-heritage-dark/40" />}
+                                    {item.unescoStatus.includes('Natural') ? <Music className="w-3 h-3 text-heritage-dark/40" /> : <Shield className="w-3 h-3 text-heritage-dark/40" />}
                                 </div>
                             </div>
                         </motion.div>

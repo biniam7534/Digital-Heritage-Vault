@@ -15,6 +15,19 @@ exports.getSites = async (req, res, next) => {
     }
 };
 
+// @desc    Get single heritage site
+// @route   GET /api/v1/heritage/sites/:id
+// @access  Public
+exports.getSite = async (req, res, next) => {
+    try {
+        const site = await HeritageSite.findById(req.params.id);
+        if (!site) return res.status(404).json({ success: false, error: 'Site not found' });
+        res.status(200).json({ success: true, data: site });
+    } catch (err) {
+        res.status(400).json({ success: false });
+    }
+};
+
 // @desc    Get all metrics
 // @route   GET /api/v1/heritage/metrics
 // @access  Public
@@ -96,5 +109,46 @@ exports.getSavedPredictions = async (req, res, next) => {
         res.status(200).json({ success: true, count: predictions.length, data: predictions });
     } catch (err) {
         res.status(400).json({ success: false, error: err.message });
+    }
+};
+
+// @desc    Create a heritage site
+// @route   POST /api/v1/heritage/sites
+// @access  Private
+exports.createSite = async (req, res, next) => {
+    try {
+        const site = await HeritageSite.create(req.body);
+        res.status(201).json({ success: true, data: site });
+    } catch (err) {
+        res.status(400).json({ success: false, error: err.message });
+    }
+};
+
+// @desc    Update a heritage site
+// @route   PUT /api/v1/heritage/sites/:id
+// @access  Private
+exports.updateSite = async (req, res, next) => {
+    try {
+        const site = await HeritageSite.findByIdAndUpdate(req.params.id, req.body, {
+            new: true,
+            runValidators: true
+        });
+        if (!site) return res.status(404).json({ success: false, error: 'Site not found' });
+        res.status(200).json({ success: true, data: site });
+    } catch (err) {
+        res.status(400).json({ success: false });
+    }
+};
+
+// @desc    Delete a heritage site
+// @route   DELETE /api/v1/heritage/sites/:id
+// @access  Private
+exports.deleteSite = async (req, res, next) => {
+    try {
+        const site = await HeritageSite.findByIdAndDelete(req.params.id);
+        if (!site) return res.status(404).json({ success: false, error: 'Site not found' });
+        res.status(200).json({ success: true, data: {} });
+    } catch (err) {
+        res.status(400).json({ success: false });
     }
 };

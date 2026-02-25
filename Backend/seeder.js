@@ -18,7 +18,7 @@ const sites = [
         name: 'Lalibela',
         location: 'Amhara Region, Ethiopia',
         description: 'Famous for its 11 monolithic rock-hewn churches, carved out of volcanic tuff. A spiritual center for Ethiopian Christianity.',
-        image: 'https://images.unsplash.com/photo-1545620853-93d3b769ea87?auto=format&fit=crop&q=80&w=800',
+        image: '/images/lalibela.jpg',
         unescoStatus: 'World Heritage since 1978',
         history: 'Built during the Zagwe dynasty by King Lalibela to create a "New Jerusalem" in Africa.',
         historicalData: [
@@ -42,7 +42,7 @@ const sites = [
         name: 'Axum Obelisks',
         location: 'Tigray Region, Ethiopia',
         description: 'Monumental monolithic stelae marking the center of the ancient Aksumite Empire.',
-        image: 'https://images.unsplash.com/photo-1596464716127-f2a82984de30?auto=format&fit=crop&q=80&w=800',
+        image: '/images/aksum-obelisk.jpg',
         unescoStatus: 'World Heritage since 1980',
         history: 'Center of one of the four greatest powers of the ancient world alongside Rome and Persia.',
         historicalData: [
@@ -66,7 +66,7 @@ const sites = [
         name: 'Simien Mountains',
         location: 'Amhara Region, Ethiopia',
         description: 'Spectacular landscape with high peaks and deep precipices, home to the Walia ibex and Gelada baboon.',
-        image: 'https://images.unsplash.com/photo-1545620853-294708703310?auto=format&fit=crop&q=80&w=800',
+        image: '/images/simien-mountains.jpg',
         unescoStatus: 'World Heritage since 1978',
         history: 'Removed from the "In Danger" list in 2017 after significant conservation progress.',
         historicalData: [
@@ -89,7 +89,7 @@ const sites = [
         name: 'Harar Jugol',
         location: 'Harari Region, Ethiopia',
         description: 'The fortified historic town, considered the "fourth holiest city of Islam."',
-        image: 'https://images.unsplash.com/photo-1545569341-9eb8b30979d9?auto=format&fit=crop&q=80&w=800',
+        image: '/images/harar.jpg',
         unescoStatus: 'World Heritage since 2006',
         history: 'A center of Islamic learning and a hub for trade in the Horn of Africa for centuries.',
         historicalData: [
@@ -112,7 +112,7 @@ const sites = [
         name: 'Fasil Ghebbi',
         location: 'Gondar, Amhara Region',
         description: 'The fortress-city known as the "Camelot of Africa," featuring castles and palaces of the 16th and 17th centuries.',
-        image: 'https://images.unsplash.com/photo-1596464716127-f2a82984de30?auto=format&fit=crop&q=80&w=800',
+        image: '/images/fasil-ghebbi.webp',
         unescoStatus: 'World Heritage since 1979',
         history: 'Founded by Emperor Fasilides, it served as the residence of Ethiopian emperors for over 200 years.',
         historicalData: [
@@ -135,7 +135,7 @@ const sites = [
         name: 'Tiya Stelae',
         location: 'Central Ethiopia',
         description: 'An archaeological site containing 36 monuments, including 32 carved stelae with mysterious symbols.',
-        image: 'https://images.unsplash.com/photo-1545620853-93d3b769ea87?auto=format&fit=crop&q=80&w=800',
+        image: '/images/tiya.jpg',
         unescoStatus: 'World Heritage since 1980',
         history: 'The stelae mark a prehistoric burial complex, representing an ancient Ethiopian culture whose origin is still debated.',
         historicalData: [
@@ -156,7 +156,7 @@ const sites = [
         name: 'Konso Landscape',
         location: 'Southern Ethiopia',
         description: 'A spectacular cultural landscape featuring massive stone-walled terraces and fortified settlements.',
-        image: 'https://images.unsplash.com/photo-1545620853-294708703310?auto=format&fit=crop&q=80&w=800',
+        image: '/images/konso.jpg',
         unescoStatus: 'World Heritage since 2011',
         history: 'A living tradition representing the Konso people\'s adaptation to a dry, hostile environment over 400 years.',
         historicalData: [
@@ -177,7 +177,7 @@ const sites = [
         name: 'Debre Damo',
         location: 'Tigray Region, Ethiopia',
         description: 'A 6th-century monastery built on a flat-top mountain, accessible only by climbing a 15-meter rope.',
-        image: 'https://images.unsplash.com/photo-1545620853-93d3b769ea87?auto=format&fit=crop&q=80&w=800',
+        image: '/images/debre-damo.jpg',
         unescoStatus: 'Historical Cultural Site',
         history: 'One of the oldest monasteries in Ethiopia, featuring a unique Aksumite architectural style.',
         historicalData: [
@@ -198,7 +198,7 @@ const sites = [
         name: 'Erta Ale',
         location: 'Afar Region, Ethiopia',
         description: 'A continuously active shield volcano in the Danakil Depression, featuring a persistent lava lake.',
-        image: 'https://images.unsplash.com/photo-1545569341-9eb8b30979d9?auto=format&fit=crop&q=80&w=800',
+        image: '/images/erta-ale.jpg',
         unescoStatus: 'Natural Heritage Site',
         history: 'Known as the "Smoking Mountain" by the Afar people, it is one of the most unique geological sites on Earth.',
         historicalData: [
@@ -219,7 +219,7 @@ const sites = [
         name: 'Temple of Yeha',
         location: 'Tigray Region, Ethiopia',
         description: 'The oldest standing structure in Ethiopia, dating back to at least the 7th century BC.',
-        image: 'https://images.unsplash.com/photo-1596464716127-f2a82984de30?auto=format&fit=crop&q=80&w=800',
+        image: '/images/yeha-temple.jpg',
         unescoStatus: 'Archaeological Heritage',
         history: 'A grand temple of the D\'mt kingdom, predating the Aksumite Empire by several centuries.',
         historicalData: [
@@ -240,7 +240,7 @@ const sites = [
         name: 'Wanchi Crater Lake',
         location: 'Oromia Region, Ethiopia',
         description: 'A breathtaking crater lake at 3,380m altitude, with an island monastery and lush greenery.',
-        image: 'https://images.unsplash.com/photo-1545620853-294708703310?auto=format&fit=crop&q=80&w=800',
+        image: '/images/wanchi.jpg',
         unescoStatus: 'Natural & Cultural Site',
         history: 'An extinct volcanic crater that has become a center of nature and spirituality for centuries.',
         historicalData: [
@@ -261,7 +261,7 @@ const sites = [
         name: 'Sof Omer Caves',
         location: 'Bale, Oromia Region',
         description: 'One of the longest and most spectacular cave systems in Africa, carved by the Web River.',
-        image: 'https://images.unsplash.com/photo-1545620853-93d3b769ea87?auto=format&fit=crop&q=80&w=800',
+        image: '/images/sof-omer.jpg',
         unescoStatus: 'Natural Heritage',
         history: 'A sacred site for both nature lovers and religious pilgrims, formed over millions of years.',
         historicalData: [
