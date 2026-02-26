@@ -40,11 +40,10 @@ The project features a unique **"Heritage Aesthetic"**:
 
 ## 🚀 Technical Stack
 
-*   **Frontend**: React 19 + Vite
-*   **Styling**: Tailwind CSS v4 (with custom `@theme` tokens)
-*   **Icons**: Lucide React
-*   **Animations**: Framer Motion
-*   **Routing**: React Router DOM (Single-page Sectional Navigation)
+*   **Frontend**: React 19 + Vite + Framer Motion
+*   **Backend**: Node.js + Express + MongoDB (Mongoose)
+*   **Styling**: Tailwind CSS v4
+*   **API Architecture**: RESTful with centralized configuration
 
 ---
 
@@ -53,38 +52,48 @@ The project features a unique **"Heritage Aesthetic"**:
 ### Prerequisites
 
 *   Node.js (v18 or higher)
+*   MongoDB (Atlas or local instance)
 *   npm or yarn
 
 ### Installation
 
-1. Clone the repository:
-   ```bash
-   git clone https://github.com/biniam7534/Digital-Heritage-Vault.git
-   ```
+1.  **Clone the repository**:
+    ```bash
+    git clone https://github.com/biniam7534/digital-heritage-vault.git
+    cd digital-heritage-vault
+    ```
 
-2. Navigate to the frontend directory:
-   ```bash
-   cd "Digital Heritage Vault/Frontend"
-   ```
+2.  **Setup Backend**:
+    ```bash
+    cd Backend
+    npm install
+    # Create a .env file with MONGO_URI and PORT=5000
+    npm run data:import  # Seed the database with heritage sites
+    npm run dev
+    ```
 
-3. Install dependencies:
-   ```bash
-   npm install
-   ```
+3.  **Setup Frontend**:
+    ```bash
+    cd ../Frontend
+    npm install
+    # Create a .env file with VITE_API_URL=http://localhost:5000/api/v1
+    npm run dev
+    ```
 
-4. Start the development server:
-   ```bash
-   npm run dev
-   ```
+---
+
+## 🚀 Deployment
+
+For detailed instructions on how to deploy the Backend to Render and the Frontend to Vercel/Netlify, please refer to the **[DEPLOYMENT.md](./DEPLOYMENT.md)** file.
 
 ---
 
 ## 🗺️ Project Structure
 
-*   **/src/components**: Reusable UI components (Navbar, Hero, StatBox, etc.)
-*   **/src/pages**: Main page components (Home hub)
-*   **/src/layouts**: Global layout wrappers
-*   **/src/index.css**: Global styles and Heritage Design System variables
+*   **/Backend**: Express server, Mongoose models, and heritage API routes.
+*   **/Frontend**: React application with Heritage Design System.
+    *   **/src/config/api.js**: Centralized API endpoint configuration.
+    *   **/public/images**: Local high-resolution heritage site assets.
 
 ---
 

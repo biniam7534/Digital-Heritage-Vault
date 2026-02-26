@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { API_BASE_URL } from '../config/api';
 import { useParams, Link } from 'react-router-dom';
 import { Play, Pause, SkipBack, SkipForward, Star, Share2, Heart, Award, ArrowLeft } from 'lucide-react';
 import { motion } from 'framer-motion';
@@ -11,7 +12,7 @@ const ArtifactDetail = () => {
     useEffect(() => {
         const fetchSite = async () => {
             try {
-                const res = await fetch(`http://localhost:5000/api/v1/heritage/sites/${id}`);
+                const res = await fetch(`${API_BASE_URL}/heritage/sites/${id}`);
                 const json = await res.json();
                 if (json.success) {
                     setSite(json.data);

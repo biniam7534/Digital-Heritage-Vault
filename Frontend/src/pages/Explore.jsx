@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Search, Filter, Shield, Sword, FileText, Music } from 'lucide-react';
 import { motion } from 'framer-motion';
+import { API_BASE_URL } from '../config/api';
 
 const Explore = () => {
     const [activeFilter, setActiveFilter] = useState('All');
@@ -11,7 +12,7 @@ const Explore = () => {
     useEffect(() => {
         const fetchSites = async () => {
             try {
-                const res = await fetch('http://localhost:5000/api/v1/heritage/sites');
+                const res = await fetch(`${API_BASE_URL}/heritage/sites`);
                 const json = await res.json();
                 if (json.success) {
                     setArtifacts(json.data);

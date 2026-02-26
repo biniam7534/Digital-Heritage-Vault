@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { API_BASE_URL } from '../config/api';
 import { motion, AnimatePresence } from 'framer-motion';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, AreaChart, Area } from 'recharts';
 import { Shield, TrendingDown, AlertTriangle, Activity, Database } from 'lucide-react';
@@ -13,7 +14,7 @@ const Predictor = () => {
     useEffect(() => {
         const fetchSites = async () => {
             try {
-                const res = await fetch('http://localhost:5000/api/v1/heritage/sites');
+                const res = await fetch(`${API_BASE_URL}/heritage/sites`);
                 const json = await res.json();
                 if (json.success) {
                     setSites(json.data);
@@ -30,7 +31,7 @@ const Predictor = () => {
         if (!selectedSiteId) return;
         setIsLoading(true);
         try {
-            const res = await fetch(`http://localhost:5000/api/v1/heritage/sites/${selectedSiteId}/predict`);
+            const res = await fetch(`${API_BASE_URL}/heritage/sites/${selectedSiteId}/predict`);
             const json = await res.json();
             if (json.success) {
                 setPredictionData(json.data);

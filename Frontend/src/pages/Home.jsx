@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { API_BASE_URL } from '../config/api';
 import Hero from '../components/Hero';
 import Predictor from '../components/Predictor';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -100,9 +101,9 @@ const Home = () => {
         const fetchData = async () => {
             try {
                 const [metricsRes, logsRes, sitesRes] = await Promise.all([
-                    fetch('http://localhost:5000/api/v1/heritage/metrics'),
-                    fetch('http://localhost:5000/api/v1/heritage/logs'),
-                    fetch('http://localhost:5000/api/v1/heritage/sites')
+                    fetch(`${API_BASE_URL}/heritage/metrics`),
+                    fetch(`${API_BASE_URL}/heritage/logs`),
+                    fetch(`${API_BASE_URL}/heritage/sites`)
                 ]);
                 const metricsJson = await metricsRes.json();
                 const logsJson = await logsRes.json();

@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { API_BASE_URL } from '../config/api';
 import { motion } from 'framer-motion';
 import { BarChart, Bar, ResponsiveContainer, XAxis, YAxis, Tooltip } from 'recharts';
 
@@ -9,7 +10,7 @@ const Trends = () => {
     useEffect(() => {
         const fetchTrends = async () => {
             try {
-                const res = await fetch('http://localhost:5000/api/future/metrics');
+                const res = await fetch(`${API_BASE_URL}/future/metrics`);
                 const json = await res.json();
                 if (json.success) {
                     const globalTrends = json.data

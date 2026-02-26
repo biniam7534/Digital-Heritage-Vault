@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { API_BASE_URL } from '../config/api';
 import { motion, AnimatePresence } from 'framer-motion';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, AreaChart, Area } from 'recharts';
 import { cityData } from '../data/mockData';
@@ -41,7 +42,7 @@ const SmartCity = () => {
     useEffect(() => {
         const fetchMetrics = async () => {
             try {
-                const res = await fetch('http://localhost:5000/api/future/metrics');
+                const res = await fetch(`${API_BASE_URL}/future/metrics`);
                 const json = await res.json();
                 if (json.success) {
                     // Filter and format city_stat metrics

@@ -1,4 +1,5 @@
 import React from 'react';
+import { API_BASE_URL } from '../config/api';
 import {
     LayoutDashboard, Database, FolderSearch, Users, MessageSquare,
     Search, Bell, Settings, Plus, Edit3, Trash2, TrendingUp
@@ -13,7 +14,7 @@ const AdminDashboard = () => {
     React.useEffect(() => {
         const fetchSites = async () => {
             try {
-                const res = await fetch('http://localhost:5000/api/v1/heritage/sites');
+                const res = await fetch(`${API_BASE_URL}/heritage/sites`);
                 const json = await res.json();
                 if (json.success) {
                     setSites(json.data);
@@ -31,7 +32,7 @@ const AdminDashboard = () => {
     const handleDelete = async (id) => {
         if (!window.confirm('Are you sure you want to delete this site?')) return;
         try {
-            const res = await fetch(`http://localhost:5000/api/v1/heritage/sites/${id}`, { method: 'DELETE' });
+            const res = await fetch(`${API_BASE_URL}/heritage/sites/${id}`, { method: 'DELETE' });
             const json = await res.json();
             if (json.success) {
                 setSites(sites.filter(s => s._id !== id));
