@@ -291,6 +291,25 @@ const metrics = [
     { type: 'preservation_progress', label: '2022', value: 75, year: 2022 },
     { type: 'preservation_progress', label: '2023', value: 82, year: 2023 },
     { type: 'preservation_progress', label: '2024', value: 94, year: 2024 },
+    // Future City Stats for Simulation
+    { type: 'city_stat', name: 'population', value: 1.2, year: 2025 },
+    { type: 'city_stat', name: 'energy', value: 45, year: 2025 },
+    { type: 'city_stat', name: 'automation', value: 30, year: 2025 },
+    { type: 'city_stat', name: 'population', value: 1.5, year: 2028 },
+    { type: 'city_stat', name: 'energy', value: 55, year: 2028 },
+    { type: 'city_stat', name: 'automation', value: 45, year: 2028 },
+    { type: 'city_stat', name: 'population', value: 1.9, year: 2031 },
+    { type: 'city_stat', name: 'energy', value: 68, year: 2031 },
+    { type: 'city_stat', name: 'automation', value: 60, year: 2031 },
+    { type: 'city_stat', name: 'population', value: 2.4, year: 2034 },
+    { type: 'city_stat', name: 'energy', value: 82, year: 2034 },
+    { type: 'city_stat', name: 'automation', value: 75, year: 2034 },
+    { type: 'city_stat', name: 'population', value: 3.1, year: 2037 },
+    { type: 'city_stat', name: 'energy', value: 94, year: 2037 },
+    { type: 'city_stat', name: 'automation', value: 88, year: 2037 },
+    { type: 'city_stat', name: 'population', value: 4.0, year: 2040 },
+    { type: 'city_stat', name: 'energy', value: 100, year: 2040 },
+    { type: 'city_stat', name: 'automation', value: 98, year: 2040 },
 ];
 
 const logs = [

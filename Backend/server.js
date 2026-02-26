@@ -19,9 +19,13 @@ app.use(cors());
 
 // Route files
 const heritage = require('./routes/heritage');
+const future = require('./routes/futureRoutes');
+const artifacts = require('./routes/artifactRoutes');
 
 // Mount routers
 app.use('/api/v1/heritage', heritage);
+app.use('/api/v1/future', future);
+app.use('/api/v1/artifacts', artifacts);
 
 // Basic route
 app.get('/', (req, res) => {
