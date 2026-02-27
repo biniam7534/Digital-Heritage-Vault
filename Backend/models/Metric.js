@@ -4,11 +4,17 @@ const MetricSchema = new mongoose.Schema({
     type: {
         type: String,
         required: true,
-        enum: ['climate_risk', 'urbanization_impact', 'tourism_pressure', 'preservation_progress'],
+        enum: ['climate_risk', 'urbanization_impact', 'tourism_pressure', 'preservation_progress', 'city_stat', 'global_trend'],
     },
     label: {
         type: String,
-        required: true,
+        required: false,
+    },
+    name: {
+        type: String,
+    },
+    category: {
+        type: String,
     },
     value: {
         type: Number,

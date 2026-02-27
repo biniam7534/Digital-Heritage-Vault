@@ -4,6 +4,7 @@ const {
     getSite,
     getMetrics,
     getLogs,
+    createLog,
     getSitePrediction,
     savePrediction,
     getSavedPredictions,
@@ -21,7 +22,10 @@ router.put('/sites/:id', updateSite);
 router.delete('/sites/:id', deleteSite);
 router.get('/sites/:id/predict', getSitePrediction);
 router.get('/metrics', getMetrics);
-router.get('/logs', getLogs);
+router.route('/logs')
+    .get(getLogs)
+    .post(createLog);
+
 router.route('/predictions')
     .get(getSavedPredictions)
     .post(savePrediction);

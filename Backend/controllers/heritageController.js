@@ -52,6 +52,18 @@ exports.getLogs = async (req, res, next) => {
     }
 };
 
+// @desc    Create a log entry
+// @route   POST /api/v1/heritage/logs
+// @access  Public
+exports.createLog = async (req, res, next) => {
+    try {
+        const log = await Log.create(req.body);
+        res.status(201).json({ success: true, data: log });
+    } catch (err) {
+        res.status(400).json({ success: false, error: err.message });
+    }
+};
+
 // @desc    Get prediction for a specific site
 // @route   GET /api/v1/heritage/sites/:id/predict
 // @access  Public
@@ -62,6 +74,21 @@ exports.getSitePrediction = async (req, res, next) => {
 
         // Simple linear regression simulation based on last 2 points
         const history = site.historicalData.sort((a, b) => a.year - b.year);
+
+        if (history.length < 2) {
+            return res.status(200).json({
+                success: true,
+                data: {
+                    siteId: site._id,
+                    siteName: site.name,
+                    historicalTrend: history,
+                    futureProjection: history.map(h => ({ ...h })),
+                    riskFactors: site.riskFactors,
+                    message: "Insufficient historical data for accurate 2050 projection"
+                }
+            });
+        }
+
         const p1 = history[history.length - 2];
         const p2 = history[history.length - 1];
 
@@ -94,6 +121,14 @@ exports.getSitePrediction = async (req, res, next) => {
 exports.savePrediction = async (req, res, next) => {
     try {
         const prediction = await Prediction.create(req.body);
+
+        // Create a log entry for this prediction
+        await Log.create({
+            time: new Date().toLocaleTimeString('en-US', { hour12: false }),
+            event: `${req.body.siteName || 'Site'}: AI 2050 Projection Generated`,
+            status: 'Success'
+        });
+
         res.status(201).json({ success: true, data: prediction });
     } catch (err) {
         res.status(400).json({ success: false, error: err.message });
@@ -118,6 +153,14 @@ exports.getSavedPredictions = async (req, res, next) => {
 exports.createSite = async (req, res, next) => {
     try {
         const site = await HeritageSite.create(req.body);
+
+        // Create a log entry for new site
+        await Log.create({
+            time: new Date().toLocaleTimeString('en-US', { hour12: false }),
+            event: `${site.name}: New Archaeological Site Registered`,
+            status: 'Verified'
+        });
+
         res.status(201).json({ success: true, data: site });
     } catch (err) {
         res.status(400).json({ success: false, error: err.message });
