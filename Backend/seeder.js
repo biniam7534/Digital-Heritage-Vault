@@ -9,9 +9,64 @@ dotenv.config();
 const HeritageSite = require('./models/HeritageSite');
 const Metric = require('./models/Metric');
 const Log = require('./models/Log');
+const Prediction = require('./models/Prediction');
+const Artifact = require('./models/Artifact');
 
 // Connect to DB
 mongoose.connect(process.env.MONGO_URI);
+
+const artifacts = [
+    {
+        title: 'Ge\'ez Manuscript Fragment',
+        type: 'Document',
+        image: '/images/manuscript.jpg',
+        date: '14th Century',
+        origin: 'Askumite / Zagwe Era',
+        description: 'A well-preserved parchment fragment containing religious hymns written in ancient Ge\'ez.',
+        status: 'Verified',
+        archivist: 'Digital Sentinel Alpha'
+    },
+    {
+        title: 'Aksumite Gold Coin',
+        type: 'Artifact',
+        image: '/images/aksum-coin.jpg',
+        date: '3rd Century AD',
+        origin: 'Kingdom of Aksum',
+        description: 'A rare gold coin featuring the profile of King Endubis, the first Aksumite ruler to mint coins.',
+        status: 'Verified',
+        archivist: 'Main Curator'
+    },
+    {
+        title: 'Traditional Masinqo Audio Record',
+        type: 'Audio',
+        image: '/images/masinqo.jpg',
+        date: '19th Century Style',
+        origin: 'Highlands Heritage',
+        description: 'A high-fidelity recording of traditional Masinqo patterns used in royal ceremonies.',
+        status: 'Archived',
+        archivist: 'Acoustic Archivist'
+    },
+    {
+        title: 'Stone Statue of a seated female',
+        type: 'Artifact',
+        image: '/images/yeha-statue.jpg',
+        date: '500 BC',
+        origin: 'D\'mt Kingdom',
+        description: 'A limestone statue found near the Temple of Yeha, representing the sophisticated pre-Aksumite craftsmanship.',
+        status: 'Verified',
+        archivist: 'Main Curator'
+    },
+    {
+        title: 'Imperial Decree of Menelik II',
+        type: 'Document',
+        image: '/images/decree.jpg',
+        date: '1896',
+        origin: 'Modern Ethiopia',
+        description: 'The official mobilization order issued before the Battle of Adwa, preserved on traditional parchment.',
+        status: 'Verified',
+        archivist: 'National Archivist'
+    }
+];
 
 const sites = [
     {
@@ -333,12 +388,33 @@ const importData = async () => {
         await HeritageSite.deleteMany();
         await Metric.deleteMany();
         await Log.deleteMany();
+        await Prediction.deleteMany();
+        await Artifact.deleteMany();
 
-        await HeritageSite.create(sites);
+        const createdSites = await HeritageSite.create(sites);
         await Metric.create(metrics);
         await Log.create(logs);
+        await Artifact.create(artifacts);
 
-        console.log('🏛️ Ethiopia Heritage Data Imported...');
+        // Create dynamic predictions for ALL sites
+        const allPredictions = createdSites.map(site => {
+            const currentIntegrity = site.historicalData[site.historicalData.length - 1].integrity;
+            return {
+                siteId: site._id,
+                siteName: site.name,
+                projection: [
+                    { year: 2025, integrity: currentIntegrity },
+                    { year: 2030, integrity: Math.max(0, currentIntegrity - Math.floor(Math.random() * 5)) },
+                    { year: 2040, integrity: Math.max(0, currentIntegrity - Math.floor(Math.random() * 10)) },
+                    { year: 2050, integrity: Math.max(0, currentIntegrity - Math.floor(Math.random() * 15)) }
+                ],
+                riskFactors: site.riskFactors
+            };
+        });
+
+        await Prediction.create(allPredictions);
+
+        console.log('🏛️ Ethiopia Heritage Data & Predictions Imported...');
         process.exit();
     } catch (err) {
         console.error(err);
