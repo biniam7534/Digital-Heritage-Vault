@@ -16,7 +16,12 @@ app.use(express.json());
 
 // Enable CORS
 app.use(cors({
-    origin: "https://digital-heritage-vaul.vercel.app",
+    origin: [
+        "https://digital-heritage-vaul.vercel.app",
+        "https://digital-heritage-vault.vercel.app",
+        "http://localhost:5173",
+        "http://localhost:3000"
+    ],
     credentials: true
 }));
 
