@@ -735,8 +735,33 @@ const Home = () => {
                                 autoFocus
                                 value={terminalInput}
                                 onChange={e => setTerminalInput(e.target.value)}
-                                onKeyDown={e => {
+                                onKeyDown={async (e) => {
                                     if (e.key === 'Enter') {
+                                        const command = terminalInput.trim().toLowerCase();
+                                        if (command.startsWith('log ')) {
+                                            // Format: log "Event Name" "Status"
+                                            const parts = terminalInput.substring(4).split('"').filter(p => p.trim());
+                                            if (parts.length >= 2) {
+                                                try {
+                                                    const res = await fetch(`${API_BASE_URL}/heritage/logs`, {
+                                                        method: 'POST',
+                                                        headers: { 'Content-Type': 'application/json' },
+                                                        body: JSON.stringify({
+                                                            time: new Date().toLocaleTimeString('en-US', { hour12: false }),
+                                                            event: parts[0],
+                                                            status: parts[1]
+                                                        })
+                                                    });
+                                                    if (res.ok) {
+                                                        const logsRes = await fetch(`${API_BASE_URL}/heritage/logs`);
+                                                        const logsJson = await logsRes.json();
+                                                        if (logsJson.success) setLogsData(logsJson.data);
+                                                    }
+                                                } catch (err) {
+                                                    console.error("Terminal logging failed:", err);
+                                                }
+                                            }
+                                        }
                                         setTerminalInput('');
                                     }
                                     if (e.key === 'Escape') {

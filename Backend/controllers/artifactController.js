@@ -1,4 +1,5 @@
 const Artifact = require('../models/Artifact');
+const Log = require('../models/Log');
 
 // @desc    Get all artifacts
 // @route   GET /api/artifacts
@@ -44,6 +45,14 @@ exports.getArtifact = async (req, res) => {
 exports.createArtifact = async (req, res) => {
     try {
         const artifact = await Artifact.create(req.body);
+
+        // Log artifact creation
+        await Log.create({
+            time: new Date().toLocaleTimeString('en-US', { hour12: false }),
+            event: `Artifact: ${artifact.title} Fragment Digitized`,
+            status: 'Verified'
+        });
+
         res.status(201).json({ success: true, data: artifact });
     } catch (error) {
         res.status(400).json({ success: false, message: error.message });

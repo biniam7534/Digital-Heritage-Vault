@@ -177,6 +177,14 @@ exports.updateSite = async (req, res, next) => {
             runValidators: true
         });
         if (!site) return res.status(404).json({ success: false, error: 'Site not found' });
+
+        // Create a log entry for update
+        await Log.create({
+            time: new Date().toLocaleTimeString('en-US', { hour12: false }),
+            event: `${site.name}: Structural Records Updated`,
+            status: 'Operational'
+        });
+
         res.status(200).json({ success: true, data: site });
     } catch (err) {
         res.status(400).json({ success: false });
@@ -188,8 +196,19 @@ exports.updateSite = async (req, res, next) => {
 // @access  Private
 exports.deleteSite = async (req, res, next) => {
     try {
-        const site = await HeritageSite.findByIdAndDelete(req.params.id);
+        const site = await HeritageSite.findById(req.params.id);
         if (!site) return res.status(404).json({ success: false, error: 'Site not found' });
+
+        const siteName = site.name;
+        await site.deleteOne();
+
+        // Create a log entry for deletion
+        await Log.create({
+            time: new Date().toLocaleTimeString('en-US', { hour12: false }),
+            event: `${siteName}: Removed from Active Monitoring`,
+            status: 'Offline'
+        });
+
         res.status(200).json({ success: true, data: {} });
     } catch (err) {
         res.status(400).json({ success: false });
