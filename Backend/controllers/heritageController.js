@@ -73,7 +73,7 @@ exports.getSitePrediction = async (req, res, next) => {
         if (!site) return res.status(404).json({ success: false, error: 'Site not found' });
 
         // Simple linear regression simulation based on last 2 points
-        const history = site.historicalData.sort((a, b) => a.year - b.year);
+        const history = [...site.historicalData].sort((a, b) => a.year - b.year);
 
         if (history.length < 2) {
             return res.status(200).json({
@@ -82,7 +82,7 @@ exports.getSitePrediction = async (req, res, next) => {
                     siteId: site._id,
                     siteName: site.name,
                     historicalTrend: history,
-                    futureProjection: history.map(h => ({ ...h })),
+                    futureProjection: history.map(h => ({ year: h.year, integrity: h.integrity })),
                     riskFactors: site.riskFactors,
                     message: "Insufficient historical data for accurate 2050 projection"
                 }
@@ -96,7 +96,7 @@ exports.getSitePrediction = async (req, res, next) => {
 
         const projection = [];
         for (let year = 2025; year <= 2050; year += 5) {
-            const projectedIntegrity = Math.max(0, p2.integrity + slope * (year - p2.year));
+            const projectedIntegrity = Math.min(100, Math.max(0, p2.integrity + slope * (year - p2.year)));
             projection.push({ year, integrity: Math.round(projectedIntegrity) });
         }
 
